@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Job board platform with search, filters, employer posting, candidate applications, and role-based access. Built with React, Express, TypeScript.">
+  <meta property="og:title" content="Job Board Platform - Mostafa Ali Portfolio">
+  <meta property="og:description" content="Full-stack job board with search, filters, employer posting, candidate applications, and JWT-based role-based access. Built with React, Express, TypeScript.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mostafaali.dev/job-board/">
+  <meta property="og:image" content="https://mostafaali.dev/assets/job-board-screenshot.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Job Board Platform - Mostafa Ali Portfolio">
+  <meta name="twitter:description" content="Specialized job board platform with AI-powered job matching, resume parsing, employer dashboards, and real-time notifications.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="canonical" href="https://mostafaali.dev/job-board/">
+  <title>Job Board Platform - Mostafa Ali</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" media="print" onload="this.media='all'">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0b1120; color: #e2e8f0; min-height: 100vh; line-height: 1.6;
+    }
+    .page { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px; color: #64748b; text-decoration: none;
+      font-size: 14px; font-weight: 500; padding: 12px 0; transition: color 0.2s;
+    }
+    .back-link:hover { color: #3b82f6; }
+
+    /* Hero */
+    .hero { padding: 40px 0 60px; text-align: center; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px; background: rgba(59,130,246,0.15);
+      color: #3b82f6; padding: 6px 18px; border-radius: 20px; font-size: 13px; font-weight: 600;
+      border: 1px solid rgba(59,130,246,0.3); margin-bottom: 24px;
+    }
+    .badge i { font-size: 12px; }
+    h1 {
+      font-size: clamp(2.5rem,5vw,3.5rem); font-weight: 800; line-height: 1.15; margin-bottom: 16px;
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-desc { font-size: 18px; color: #94a3b8; max-width: 650px; margin: 0 auto 48px; }
+
+    /* UI Mockup */
+    .mockup {
+      background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; overflow: hidden;
+      margin-bottom: 64px; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .mockup-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px; background: #131c31; border-bottom: 1px solid #1e293b;
+    }
+    .mockup-dots { display: flex; gap: 6px; }
+    .mockup-dots span { width: 10px; height: 10px; border-radius: 50%; }
+    .mockup-dots span:nth-child(1) { background: #ef4444; }
+    .mockup-dots span:nth-child(2) { background: #f59e0b; }
+    .mockup-dots span:nth-child(3) { background: #22c55e; }
+    .mockup-title { font-size: 12px; color: #94a3b8; font-weight: 500; }
+    .mockup-body { display: grid; grid-template-columns: 1fr 340px; min-height: 420px; }
+    .mockup-left { border-right: 1px solid #1e293b; }
+    .mockup-right { padding: 20px; background: #0f172a; }
+
+    /* Mockup Nav Bar */
+    .mock-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; border-bottom: 1px solid #1e293b;
+    }
+    .mock-nav-brand { font-size: 15px; font-weight: 700; color: #3b82f6; display: flex; align-items: center; gap: 8px; }
+    .mock-nav-links { display: flex; gap: 20px; font-size: 12px; color: #94a3b8; }
+    .mock-nav-links span { cursor: default; }
+    .mock-nav-links span.active { color: #e2e8f0; font-weight: 600; }
+    .mock-nav-btn {
+      background: #3b82f6; color: #fff; padding: 6px 14px; border-radius: 6px;
+      font-size: 11px; font-weight: 600; cursor: default;
+    }
+
+    /* Search Bar Mockup */
+    .mock-search {
+      padding: 14px 16px; border-bottom: 1px solid #1e293b;
+    }
+    .mock-search-input {
+      display: flex; align-items: center; gap: 10px; background: #131c31;
+      border: 1px solid #1e293b; border-radius: 8px; padding: 10px 14px; margin-bottom: 10px;
+    }
+    .mock-search-input i { color: #64748b; font-size: 13px; }
+    .mock-search-input .text { color: #64748b; font-size: 12px; flex: 1; }
+    .mock-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+    .mock-filter-pill {
+      padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 500;
+      background: #131c31; color: #94a3b8; border: 1px solid #1e293b; cursor: default;
+    }
+    .mock-filter-pill.active { background: rgba(59,130,246,0.15); color: #3b82f6; border-color: rgba(59,130,246,0.3); }
+
+    /* Job Cards */
+    .mock-jobs { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+    .mock-job-card {
+      display: flex; gap: 12px; padding: 12px; border-radius: 10px;
+      border: 1px solid #1e293b; background: #131c31;
+    }
+    .mock-job-icon {
+      width: 36px; height: 36px; border-radius: 8px; background: rgba(59,130,246,0.12);
+      display: flex; align-items: center; justify-content: center; font-size: 14px; color: #3b82f6; flex-shrink: 0;
+    }
+    .mock-job-info { flex: 1; min-width: 0; }
+    .mock-job-title { font-size: 13px; font-weight: 600; color: #e2e8f0; margin-bottom: 3px; }
+    .mock-job-meta { font-size: 11px; color: #94a3b8; display: flex; gap: 8px; flex-wrap: wrap; }
+    .mock-job-meta i { margin-right: 3px; font-size: 10px; }
+    .mock-job-salary { font-size: 12px; color: #22c55e; font-weight: 600; white-space: nowrap; }
+    .mock-job-type {
+      font-size: 10px; padding: 2px 8px; border-radius: 8px; font-weight: 600;
+      background: rgba(59,130,246,0.12); color: #3b82f6;
+    }
+    .mock-job-type.remote { background: rgba(34,197,94,0.12); color: #22c55e; }
+    .mock-job-type.hybrid { background: rgba(250,204,21,0.12); color: #eab308; }
+    .mock-job-type.onsite { background: rgba(239,68,68,0.12); color: #ef4444; }
+
+    /* Detail Panel */
+    .mock-detail-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+    .mock-detail-logo {
+      width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg,#3b82f6,#06b6d4);
+      display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 16px; flex-shrink: 0;
+    }
+    .mock-detail-info h3 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .mock-detail-info p { font-size: 11px; color: #94a3b8; }
+    .mock-detail-section { margin-bottom: 14px; }
+    .mock-detail-section h4 { font-size: 12px; color: #94a3b8; margin-bottom: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+    .mock-detail-section p { font-size: 12px; color: #cbd5e1; line-height: 1.6; }
+    .mock-detail-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .mock-detail-tags span {
+      padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 500;
+      background: #131c31; color: #64748b; border: 1px solid #1e293b;
+    }
+    .mock-apply-btn {
+      display: block; width: 100%; padding: 10px; border-radius: 8px; border: none;
+      background: linear-gradient(135deg,#3b82f6,#06b6d4); color: #fff;
+      font-size: 13px; font-weight: 600; cursor: default; text-align: center;
+    }
+
+    /* Section styling */
+    .section { margin-bottom: 64px; }
+    .section-label {
+      display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;
+      color: #3b82f6; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .section h2 {
+      font-size: clamp(1.5rem,3vw,2rem); font-weight: 700; margin-bottom: 24px;
+    }
+    .section-desc { color: #cbd5e1; margin-bottom: 32px; max-width: 600px; font-size: 15px; }
+
+    /* Features Grid */
+    .features-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .feature-card {
+      background: #131c31; border: 1px solid #1e293b; border-radius: 14px;
+      padding: 24px; transition: transform 0.2s, border-color 0.2s;
+    }
+    .feature-card:hover { transform: translateY(-3px); border-color: rgba(59,130,246,0.3); }
+    .feature-icon {
+      width: 44px; height: 44px; border-radius: 10px; background: rgba(59,130,246,0.1);
+      display: flex; align-items: center; justify-content: center; font-size: 18px; color: #3b82f6; margin-bottom: 16px;
+    }
+    .feature-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .feature-card p { font-size: 13px; color: #94a3b8; line-height: 1.6; }
+
+    /* Tech Tags */
+    .tech-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+    .tech-tag {
+      padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 500;
+      background: #131c31; border: 1px solid #1e293b; color: #cbd5e1;
+    }
+    .tech-tag.angular { color: #dd0031; border-color: rgba(221,0,49,0.3); background: rgba(221,0,49,0.08); }
+    .tech-tag.typescript { color: #3178c6; border-color: rgba(49,120,198,0.3); background: rgba(49,120,198,0.08); }
+    .tech-tag.dotnet { color: #512bd4; border-color: rgba(81,43,212,0.3); background: rgba(81,43,212,0.08); }
+    .tech-tag.csharp { color: #239120; border-color: rgba(35,145,32,0.3); background: rgba(35,145,32,0.08); }
+    .tech-tag.sql { color: #e38c00; border-color: rgba(227,140,0,0.3); background: rgba(227,140,0,0.08); }
+    .tech-tag.jwt { color: #f7df1e; border-color: rgba(247,223,30,0.3); background: rgba(247,223,30,0.08); }
+    .tech-tag.rbac { color: #ec4899; border-color: rgba(236,72,153,0.3); background: rgba(236,72,153,0.08); }
+
+    /* Architecture Tree */
+    .arch-tree {
+      background: #131c31; border: 1px solid #1e293b; border-radius: 12px; padding: 28px;
+      font-family: 'Courier New', monospace; font-size: 13px; line-height: 2; overflow-x: auto; color: #94a3b8;
+    }
+    .arch-tree .folder { color: #3b82f6; }
+    .arch-tree .file { color: #e2e8f0; }
+    .arch-tree .comment { color: #94a3b8; font-style: italic; }
+    .arch-tree .highlight { color: #22c55e; }
+    .arch-tree .indent1 { padding-left: 24px; }
+    .arch-tree .indent2 { padding-left: 48px; }
+    .arch-tree .indent3 { padding-left: 72px; }
+
+    /* Code Snippet */
+    .code-block {
+      background: #131c31; border: 1px solid #1e293b; border-radius: 12px; overflow: hidden;
+    }
+    .code-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 18px; background: #0f172a; border-bottom: 1px solid #1e293b;
+    }
+    .code-header span { font-size: 12px; color: #64748b; font-weight: 500; }
+    .code-body {
+      padding: 20px 24px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.8;
+    }
+    .code-body .kw { color: #c792ea; }
+    .code-body .str { color: #c3e88d; }
+    .code-body .cm { color: #546e7a; font-style: italic; }
+    .code-body .fn { color: #82aaff; }
+    .code-body .num { color: #f78c6c; }
+    .code-body .var { color: #f07178; }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid #1e293b; padding: 32px 0 40px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    footer p { color: #64748b; font-size: 13px; }
+    footer a {
+      display: inline-flex; align-items: center; gap: 8px; color: #94a3b8;
+      text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.2s;
+    }
+    footer a:hover { color: #3b82f6; }
+
+    @media (max-width: 768px) {
+      .mockup-body { grid-template-columns: 1fr; }
+      .mockup-right { display: none; }
+      .features-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Portfolio</a>
+
+    <section class="hero">
+      <div class="badge"><i class="fas fa-bolt"></i> React + Express + In-Memory</div>
+      <h1>Job Board Platform</h1>
+      <p class="hero-desc">A full-stack job platform with keyword search, smart filters, employer posting, candidate applications, and role-based access control powered by React and Express.</p>
+      <a href="/job-board/demo.html" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#3b82f6,#06b6d4);color:#fff;padding:12px 28px;border-radius:10px;text-decoration:none;font-weight:600;font-size:15px">Try Live Demo <i class="fas fa-arrow-right"></i></a>
+    </section>
+
+    <!-- UI Mockup -->
+    <div class="mockup">
+      <div class="mockup-header">
+        <div class="mockup-dots"><span></span><span></span><span></span></div>
+        <div class="mockup-title">Job Board — App Preview</div>
+        <div style="width:52px"></div>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-left">
+          <div class="mock-nav">
+            <div class="mock-nav-brand"><i class="fas fa-briefcase"></i> JobHub</div>
+            <div class="mock-nav-links" role="tablist">
+              <span class="active" role="tab" tabindex="0">Jobs</span>
+              <span role="tab" tabindex="0">Post Job</span>
+              <span role="tab" tabindex="0">Login</span>
+            </div>
+            <div class="mock-nav-btn" tabindex="0" role="button">Sign Up</div>
+          </div>
+          <div class="mock-search">
+            <div class="mock-search-input">
+              <i class="fas fa-search"></i>
+              <span class="text">Search jobs by title, company, or keyword...</span>
+              <i class="fas fa-sliders-h" style="color:#3b82f6"></i>
+            </div>
+            <div class="mock-filters">
+              <span class="mock-filter-pill active"><i class="fas fa-map-pin"></i> All</span>
+              <span class="mock-filter-pill"><i class="fas fa-wifi"></i> Remote</span>
+              <span class="mock-filter-pill"><i class="fas fa-building"></i> Onsite</span>
+              <span class="mock-filter-pill"><i class="fas fa-home"></i> Hybrid</span>
+            </div>
+          </div>
+          <div class="mock-jobs">
+            <div class="mock-job-card">
+              <div class="mock-job-icon"><i class="fab fa-google"></i></div>
+              <div class="mock-job-info">
+                <div class="mock-job-title">Senior Frontend Developer</div>
+                <div class="mock-job-meta"><i class="fas fa-building"></i> Google &middot; <i class="fas fa-map-marker-alt"></i> Remote</div>
+                <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+                  <span class="mock-job-type remote">Remote</span>
+                  <span class="mock-job-salary">$140k - $180k</span>
+                </div>
+              </div>
+            </div>
+            <div class="mock-job-card" style="border-color:rgba(59,130,246,0.3);background:rgba(59,130,246,0.05)">
+              <div class="mock-job-icon" style="background:rgba(6,182,212,0.12);color:#06b6d4"><i class="fab fa-microsoft"></i></div>
+              <div class="mock-job-info">
+                <div class="mock-job-title">Full Stack Engineer</div>
+                <div class="mock-job-meta"><i class="fas fa-building"></i> Microsoft &middot; <i class="fas fa-map-marker-alt"></i> Redmond, WA</div>
+                <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+                  <span class="mock-job-type hybrid">Hybrid</span>
+                  <span class="mock-job-salary">$130k - $170k</span>
+                </div>
+              </div>
+            </div>
+            <div class="mock-job-card">
+              <div class="mock-job-icon" style="color:#ec4899"><i class="fas fa-rocket"></i></div>
+              <div class="mock-job-info">
+                <div class="mock-job-title">Backend Developer (Node.js)</div>
+                <div class="mock-job-meta"><i class="fas fa-building"></i> StartupXYZ &middot; <i class="fas fa-map-marker-alt"></i> New York, NY</div>
+                <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+                  <span class="mock-job-type onsite">Onsite</span>
+                  <span class="mock-job-salary">$110k - $140k</span>
+                </div>
+              </div>
+            </div>
+            <div class="mock-job-card">
+              <div class="mock-job-icon" style="color:#eab308"><i class="fas fa-store"></i></div>
+              <div class="mock-job-info">
+                <div class="mock-job-title">DevOps Engineer</div>
+                <div class="mock-job-meta"><i class="fas fa-building"></i> Shopify &middot; <i class="fas fa-map-marker-alt"></i> Remote</div>
+                <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+                  <span class="mock-job-type remote">Remote</span>
+                  <span class="mock-job-salary">$125k - $160k</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mockup-right">
+          <div class="mock-detail-header">
+            <div class="mock-detail-logo">M</div>
+            <div class="mock-detail-info">
+              <h3>Full Stack Engineer</h3>
+              <p><i class="fas fa-building"></i> Microsoft &middot; Redmond, WA</p>
+            </div>
+          </div>
+          <div class="mock-detail-section">
+            <h4>About this role</h4>
+            <p>We're looking for a passionate Full Stack Engineer to join our Azure team. You'll work on cutting-edge cloud solutions used by millions worldwide.</p>
+          </div>
+          <div class="mock-detail-tags">
+            <span>TypeScript</span>
+            <span>Node.js</span>
+            <span>Azure</span>
+            <span>React</span>
+          </div>
+          <div class="mock-detail-section">
+            <h4>Requirements</h4>
+            <p>5+ years of full stack experience, strong understanding of distributed systems, and excellent problem-solving skills.</p>
+          </div>
+          <div style="margin-top:auto">
+            <div class="mock-apply-btn"><i class="fas fa-paper-plane"></i> Apply Now</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="section">
+      <div class="section-label"><i class="fas fa-bullseye"></i> Case Study</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+        <div class="feature-card"><i class="fas fa-exclamation-triangle" style="color:#f59e0b"></i><h4>Problem</h4><p>Niche industries lack specialized job platforms. General sites like LinkedIn are too broad, making it hard for specialized talent to find relevant positions.</p></div>
+        <div class="feature-card"><i class="fas fa-lightbulb" style="color:#8b5cf6"></i><h4>Solution</h4><p>Built a specialized job board with Node.js/Express backend featuring a RESTful API and in-memory data store, with a React/TypeScript frontend for job search, employer posting, and role-based access.</p></div>
+        <div class="feature-card"><i class="fas fa-chart-line" style="color:#22c55e"></i><h4>Result</h4><p>A fully functional job board with JWT authentication, role-based access, job CRUD, and application management.</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label"><i class="fas fa-star"></i> Features</div>
+      <h2>Everything you need to manage jobs</h2>
+      <p class="section-desc">A complete job board platform for both candidates and employers with role-based access.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-search"></i></div>
+          <h3>Job Search by Keyword</h3>
+          <p>Search through thousands of job listings using keywords, company names, or locations with instant results.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-filter"></i></div>
+          <h3>Filter by Type</h3>
+          <p>Easily filter jobs by work type: Remote, Onsite, or Hybrid with color-coded badges for quick scanning.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-users"></i></div>
+          <h3>Candidate Applications</h3>
+          <p>Candidates can apply with a cover letter and employers can review all submissions for each job listing.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-plus-circle"></i></div>
+          <h3>Employer Job Posting</h3>
+          <p>Employers can post, edit, and delete job listings with detailed descriptions, requirements, and salary ranges.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+          <h3>Role-based Access</h3>
+          <p>Secure role-based access control: employers can post and manage jobs, candidates can browse and apply.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-clipboard-list"></i></div>
+          <h3>Applicant Review</h3>
+          <p>Employers can view all applicants and their cover letters for each job listing in a clean interface.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tech Stack -->
+    <div class="section">
+      <div class="section-label"><i class="fas fa-code"></i> Tech Stack</div>
+      <h2>Built with modern technologies</h2>
+      <p class="section-desc">A full-stack architecture using React on the frontend and Express on the backend.</p>
+      <div class="tech-grid">
+        <span class="tech-tag typescript"><i class="fab fa-js"></i> TypeScript</span>
+        <span class="tech-tag jwt"><i class="fas fa-key"></i> JWT</span>
+        <span class="tech-tag rbac"><i class="fas fa-shield-alt"></i> RBAC</span>
+      </div>
+    </div>
+
+    <!-- Architecture -->
+    <div class="section">
+      <div class="section-label"><i class="fas fa-sitemap"></i> Architecture</div>
+      <h2>Project structure</h2>
+      <p class="section-desc">Clean separation of concerns with a well-organized monorepo structure.</p>
+      <div class="arch-tree">
+        <div><i class="fas fa-folder-open folder"></i> job-board /</div>
+        <div class="indent1"><i class="fas fa-folder folder"></i> backend /</div>
+        <div class="indent2"><span class="file"><i class="far fa-file-code"></i> src/index.ts</span> <span class="comment">// Express server setup, middleware</span></div>
+        <div class="indent2"><span class="file"><i class="far fa-file-code"></i> src/routes/auth.ts</span> <span class="comment">// Login, register, JWT tokens</span></div>
+        <div class="indent2"><span class="file"><i class="far fa-file-code"></i> src/routes/jobs.ts</span> <span class="comment">// CRUD job listings, search &amp; filter</span></div>
+        <div class="indent2"><span class="file"><i class="far fa-file-code"></i> src/routes/applications.ts</span> <span class="comment">// Submit &amp; track applications</span></div>
+        <div class="indent1"><span class="highlight"><i class="fas fa-check-circle"></i> backend/ (Node.js + Express)</span></div>
+        <div class="indent1"><i class="fas fa-folder folder"></i> frontend /</div>
+        <div class="indent2"><span class="file"><i class="far fa-file-code"></i> src/App.tsx</span> <span class="comment">// Root component, routing setup</span></div>
+        <div class="indent2"><span class="file"><i class="far fa-file-code"></i> src/main.tsx</span> <span class="comment">// Entry point</span></div>
+        <div class="indent2"><span class="file"><i class="far fa-file-code"></i> src/pages/Login.tsx</span> <span class="comment">// Authentication page</span></div>
+        <div class="indent2"><span class="file"><i class="far fa-file-code"></i> src/pages/JobBoard.tsx</span> <span class="comment">// Job listing with search &amp; filters</span></div>
+        <div class="indent2"><span class="file"><i class="far fa-file-code"></i> src/api/client.ts</span> <span class="comment">// HTTP client, API service layer</span></div>
+        <div class="indent1"><span class="highlight"><i class="fas fa-check-circle"></i> frontend/ (React + TypeScript)</span></div>
+      </div>
+    </div>
+
+    <!-- Code Snippet -->
+    <div class="section">
+      <div class="section-label"><i class="fas fa-terminal"></i> Getting Started</div>
+      <h2>Run the project locally</h2>
+      <p class="section-desc">Clone the repository and follow these steps to get the development environment running.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span><i class="fas fa-terminal"></i> Terminal</span>
+          <span style="color:#64748b;font-size:11px;cursor:default" onclick="navigator.clipboard?.writeText(this.parentElement.nextElementSibling.textContent.trim())"><i class="far fa-copy"></i> Copy</span>
+        </div>
+        <div class="code-body">
+          <span class="cm"># Clone the repository</span><br>
+          <span class="kw">git clone</span> https://github.com/mostafaali/job-board-platform.git<br>
+          <span class="kw">cd</span> job-board-platform<br><br>
+          <span class="cm"># Start the backend</span><br>
+          <span class="kw">cd</span> backend<br>
+          <span class="kw">npm install</span><br>
+           <span class="fn">cp</span> .env.example .env  <span class="cm"># Configure environment variables</span><br>
+          <span class="kw">npm run dev</span><br><br>
+          <span class="cm"># In a new terminal, start the frontend</span><br>
+          <span class="kw">cd</span> frontend<br>
+          <span class="kw">npm install</span><br>
+           <span class="kw">npm run dev</span><br><br>
+           <span class="cm"># Open http://localhost:3003</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2026 Mostafa Ali &mdash; Job Board Platform</p>
+      <a href="https://github.com/mostafaali/job-board-platform" target="_blank"><i class="fab fa-github"></i> View on GitHub</a>
+    </footer>
+  </div>
+</body>
+</html>

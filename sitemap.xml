@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://mostafaali.dev/</loc><priority>1.0</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://mostafaali.dev/projects.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://mostafaali.dev/uses.html</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://mostafaali.dev/ai-chat-app/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://mostafaali.dev/ai-resume-analyzer/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://mostafaali.dev/ecommerce-platform/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://mostafaali.dev/finance-tracker/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://mostafaali.dev/job-board/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://mostafaali.dev/kanban-task-manager/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://mostafaali.dev/saas-dashboard/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://mostafaali.dev/social-platform/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://mostafaali.dev/ai-chat-app/demo.html</loc><priority>0.4</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://mostafaali.dev/saas-dashboard/demo.html</loc><priority>0.4</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://mostafaali.dev/social-platform/demo.html</loc><priority>0.4</priority><changefreq>monthly</changefreq></url>
+</urlset>

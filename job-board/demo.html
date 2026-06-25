@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <meta name="description" content="Interactive demo of Job Board Platform featuring job search, filters, and application management. React + Express portfolio project.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Board Demo</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📋</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"></noscript>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #0b1120; color: #e2e8f0; min-height: 100vh; }
+.back-link { display: block; padding: 12px 24px; color: #64748b; text-decoration: none; font-size: 14px; }
+.back-link:hover { color: #94a3b8; }
+nav { background: #131c31; border-bottom: 1px solid #1e293b; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+.nav-left { display: flex; align-items: center; gap: 32px; }
+.logo { font-size: 22px; font-weight: 700; color: #3b82f6; }
+.nav-links { display: flex; gap: 24px; }
+.nav-links a { color: #94a3b8; text-decoration: none; font-size: 14px; font-weight: 500; }
+.nav-links a:hover { color: #e2e8f0; }
+.nav-right .user-icon { width: 36px; height: 36px; border-radius: 50%; background: #1e293b; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.nav-right .user-icon i { color: #64748b; font-size: 16px; }
+.container { max-width: 1280px; margin: 0 auto; padding: 24px; }
+.search-bar { position: relative; margin-bottom: 20px; }
+.search-bar i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #64748b; }
+.search-bar input { width: 100%; padding: 14px 16px 14px 46px; background: #131c31; border: 1px solid #1e293b; border-radius: 10px; color: #e2e8f0; font-size: 15px; outline: none; }
+.search-bar input::placeholder { color: #475569; }
+.search-bar input:focus { border-color: #3b82f6; }
+.filter-pills { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.pill { padding: 8px 18px; border-radius: 20px; border: 1px solid #1e293b; background: transparent; color: #94a3b8; cursor: pointer; font-size: 13px; font-weight: 500; transition: all .2s; }
+.pill.active { background: #3b82f6; border-color: #3b82f6; color: #fff; }
+.pill:hover:not(.active) { border-color: #475569; color: #e2e8f0; }
+.demo-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.job-list { max-height: 600px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 4px; }
+.job-list::-webkit-scrollbar { width: 6px; }
+.job-list::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+.job-card { background: #131c31; border: 1px solid #1e293b; border-radius: 12px; padding: 18px; cursor: pointer; transition: all .2s; }
+.job-card:hover { border-color: #334155; }
+.job-card.active { border-color: #3b82f6; background: #1a2744; }
+.job-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+.job-card .company { font-size: 13px; color: #94a3b8; margin-bottom: 8px; }
+.job-card .meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 12px; color: #64748b; }
+.job-card .meta i { margin-right: 3px; }
+.badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+.badge-remote { background: rgba(34,197,94,.15); color: #22c55e; }
+.badge-onsite { background: rgba(59,130,246,.15); color: #3b82f6; }
+.badge-hybrid { background: rgba(245,158,11,.15); color: #f59e0b; }
+.salary { font-size: 13px; color: #22c55e; font-weight: 600; }
+.posted { font-size: 12px; color: #64748b; }
+.detail-panel { background: #131c31; border: 1px solid #1e293b; border-radius: 12px; padding: 28px; min-height: 400px; }
+.detail-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; color: #475569; }
+.detail-placeholder i { font-size: 48px; margin-bottom: 16px; }
+.detail-placeholder p { font-size: 15px; color: #94a3b8; }
+.company-logo { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg,#3b82f6,#8b5cf6); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+.company-logo i { font-size: 28px; color: #fff; }
+.detail-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+.detail-company { font-size: 15px; color: #94a3b8; margin-bottom: 12px; }
+.detail-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.detail-meta span { font-size: 13px; color: #94a3b8; }
+.detail-meta span i { margin-right: 4px; }
+.detail-salary { font-size: 18px; color: #22c55e; font-weight: 700; margin-bottom: 20px; }
+.btn { padding: 12px 28px; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all .2s; }
+.btn-primary { background: #3b82f6; color: #fff; }
+.btn-primary:hover { background: #2563eb; }
+.detail-section { margin-top: 24px; }
+.detail-section h4 { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+.detail-section p, .detail-section li { font-size: 13px; color: #94a3b8; line-height: 1.7; }
+.detail-section ul { list-style: none; padding: 0; }
+.detail-section ul li::before { content: "•"; color: #3b82f6; margin-right: 8px; }
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,.6); align-items: center; justify-content: center; z-index: 100; }
+.modal-overlay.show { display: flex; }
+.modal { background: #131c31; border: 1px solid #1e293b; border-radius: 14px; padding: 28px; width: 420px; max-width: 90vw; }
+.modal h2 { font-size: 20px; margin-bottom: 20px; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 13px; color: #94a3b8; margin-bottom: 6px; }
+.form-group input, .form-group textarea { width: 100%; padding: 11px 14px; background: #0b1120; border: 1px solid #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; outline: none; font-family: inherit; }
+.form-group textarea { resize: vertical; min-height: 80px; }
+.form-group input:focus, .form-group textarea:focus { border-color: #3b82f6; }
+.modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+.btn-secondary { background: #1e293b; color: #94a3b8; }
+.btn-secondary:hover { background: #334155; }
+.toast { position: fixed; bottom: 24px; right: 24px; background: #22c55e; color: #fff; padding: 14px 24px; border-radius: 10px; font-size: 14px; font-weight: 500; opacity: 0; transform: translateY(20px); transition: all .3s; z-index: 200; }
+.toast.show { opacity: 1; transform: translateY(0); }
+@media (max-width: 768px) { .demo-layout { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<a class="back-link" href="../index.html"><i class="fas fa-arrow-left"></i> Back to Portfolio</a>
+
+<nav>
+  <div class="nav-left">
+    <div class="logo">JobHub</div>
+    <div class="nav-links">
+      <a href="javascript:void(0)">Jobs</a>
+      <a href="javascript:void(0)">Companies</a>
+      <a href="javascript:void(0)">Post Job</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <div class="user-icon"><i class="fas fa-user"></i></div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="search-bar">
+    <i class="fas fa-search"></i>
+    <input type="text" id="searchInput" placeholder="Search jobs by title, skill, or company">
+  </div>
+
+  <div class="filter-pills" id="filterPills">
+    <button class="pill active" data-filter="all">All</button>
+    <button class="pill" data-filter="Remote">Remote</button>
+    <button class="pill" data-filter="On-site">On-site</button>
+    <button class="pill" data-filter="Hybrid">Hybrid</button>
+  </div>
+
+  <div class="demo-layout">
+    <div class="job-list" id="jobList"></div>
+    <div class="detail-panel" id="detailPanel">
+      <div class="detail-placeholder" id="detailPlaceholder">
+        <i class="fas fa-briefcase"></i>
+        <p>Select a job to view details</p>
+      </div>
+      <div id="detailContent" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="applyModal">
+  <div class="modal">
+    <h2>Apply for <span id="applyJobTitle"></span></h2>
+    <div class="form-group">
+      <label>Name</label>
+      <input type="text" id="applyName" placeholder="Your full name">
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="applyEmail" placeholder="your@email.com">
+    </div>
+    <div class="form-group">
+      <label>Cover Letter</label>
+      <textarea id="applyCover" placeholder="Why you're a good fit..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()" type="button">Cancel</button>
+      <button class="btn btn-primary" onclick="submitApplication()" type="button">Submit Application</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const jobs = [
+  { id:1, title:"Senior React Developer", company:"TechCo", location:"San Francisco", type:"Remote", salary:"$120-150K", posted:"2d ago", desc:"We are looking for an experienced React developer to lead our frontend team. You will build and maintain complex UI components, mentor junior developers, and drive best practices across the organization.", requirements:["5+ years React experience","Experience with TypeScript","Strong understanding of state management","Familiarity with CI/CD pipelines"], about:"TechCo is a leading technology company specializing in enterprise SaaS solutions. We serve over 10,000 customers worldwide and are growing rapidly." },
+  { id:2, title:"Full Stack Engineer", company:"StartupX", location:"New York", type:"On-site", salary:"$100-130K", posted:"3d ago", desc:"Join our lean engineering team to build features across the full stack. You'll work with Node.js, React, and MongoDB to deliver a best-in-class product experience.", requirements:["3+ years full stack development","Proficiency in React and Node.js","Experience with SQL databases","Ability to work in a fast-paced environment"], about:"StartupX is an early-stage startup disrupting the logistics industry with AI-powered route optimization." },
+  { id:3, title:"DevOps Engineer", company:"CloudInc", location:"Austin", type:"Hybrid", salary:"$130-160K", posted:"1w ago", desc:"Help us scale our cloud infrastructure and improve deployment reliability. You will design and maintain CI/CD pipelines, manage Kubernetes clusters, and ensure 99.9% uptime.", requirements:["Experience with AWS or GCP","Kubernetes and Node.js expertise","Infrastructure as Code (Terraform)","Scripting with Python or Go"], about:"CloudInc provides cloud-native infrastructure solutions for enterprises undergoing digital transformation." },
+  { id:4, title:"Frontend Developer", company:"DesignLab", location:"Remote", type:"Remote", salary:"$90-120K", posted:"5d ago", desc:"Create beautiful, accessible user interfaces for our design collaboration platform. You will work closely with designers to implement pixel-perfect UI components.", requirements:["Strong HTML, CSS, JavaScript skills","React or Vue experience","Eye for design and UX","Accessibility best practices"], about:"DesignLab is a collaborative design platform used by over 2 million designers worldwide." },
+  { id:5, title:"Backend Engineer", company:"DataFlow", location:"Seattle", type:"On-site", salary:"$140-170K", posted:"2w ago", desc:"Build and optimize high-throughput data processing systems. You will design APIs, manage data pipelines, and ensure system reliability at scale.", requirements:["Strong backend development skills","Experience with distributed systems","Proficiency in Go or Java","Knowledge of message queues"], about:"DataFlow processes over 10TB of data daily for Fortune 500 companies." },
+  { id:6, title:"Mobile Developer", company:"AppStudio", location:"Chicago", type:"Hybrid", salary:"$110-140K", posted:"1w ago", desc:"Develop cross-platform mobile applications used by millions. You will implement new features, optimize performance, and maintain our React Native codebase.", requirements:["React Native experience","iOS and Android deployment","Performance optimization","State management (Redux or MobX)"], about:"AppStudio creates award-winning mobile applications for consumer brands." }
+];
+
+let activeFilter = 'all';
+let searchQuery = '';
+let selectedJob = null;
+
+function getBadgeClass(type) {
+  switch(type) {
+    case 'Remote': return 'badge-remote';
+    case 'On-site': return 'badge-onsite';
+    case 'Hybrid': return 'badge-hybrid';
+    default: return '';
+  }
+}
+
+function renderJobList() {
+  const list = document.getElementById('jobList');
+  const filtered = jobs.filter(j => {
+    if (activeFilter !== 'all' && j.type !== activeFilter) return false;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      return j.title.toLowerCase().includes(q) || j.company.toLowerCase().includes(q) || j.type.toLowerCase().includes(q) || j.location.toLowerCase().includes(q);
+    }
+    return true;
+  });
+  list.innerHTML = filtered.map(j => `
+    <div class="job-card${selectedJob && selectedJob.id === j.id ? ' active' : ''}" data-id="${j.id}" tabindex="0" role="button" onclick="selectJob(${j.id})" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); selectJob(${j.id}); }">
+      <h3>${j.title}</h3>
+      <div class="company">${j.company}</div>
+      <div class="meta">
+        <span><i class="fas fa-map-marker-alt"></i> ${j.location}</span>
+        <span class="badge ${getBadgeClass(j.type)}">${j.type}</span>
+        <span class="salary">${j.salary}</span>
+        <span class="posted"><i class="far fa-clock"></i> ${j.posted}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectJob(id) {
+  selectedJob = jobs.find(j => j.id === id);
+  renderJobList();
+  showDetail(selectedJob);
+}
+
+function showDetail(job) {
+  document.getElementById('detailPlaceholder').style.display = 'none';
+  const content = document.getElementById('detailContent');
+  content.style.display = 'block';
+  content.innerHTML = `
+    <div class="company-logo"><i class="fas fa-building"></i></div>
+    <div class="detail-title">${job.title}</div>
+    <div class="detail-company">${job.company}</div>
+    <div class="detail-meta">
+      <span><i class="fas fa-map-marker-alt"></i> ${job.location}</span>
+      <span class="badge ${getBadgeClass(job.type)}">${job.type}</span>
+    </div>
+    <div class="detail-salary">${job.salary}</div>
+    <button class="btn btn-primary" onclick="openApply(${job.id})">Apply Now</button>
+    <div class="detail-section">
+      <h4>About this role</h4>
+      <p>${job.desc}</p>
+    </div>
+    <div class="detail-section">
+      <h4>Requirements</h4>
+      <ul>${job.requirements.map(r => `<li>${r}</li>`).join('')}</ul>
+    </div>
+    <div class="detail-section">
+      <h4>About ${job.company}</h4>
+      <p>${job.about}</p>
+    </div>
+  `;
+}
+
+function openApply(id) {
+  const job = jobs.find(j => j.id === id);
+  document.getElementById('applyJobTitle').textContent = job.title;
+  document.getElementById('applyModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('applyModal').classList.remove('show');
+}
+
+function submitApplication() {
+  const name = document.getElementById('applyName').value.trim();
+  const email = document.getElementById('applyEmail').value.trim();
+  if (!name || !email) { showToast('Please fill in name and email', false); return; }
+  closeModal();
+  showToast('Application submitted successfully!', true);
+  document.getElementById('applyName').value = '';
+  document.getElementById('applyEmail').value = '';
+  document.getElementById('applyCover').value = '';
+}
+
+function showToast(msg, success) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = success ? '#22c55e' : '#ef4444';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+document.querySelectorAll('#filterPills .pill').forEach(pill => {
+  pill.addEventListener('click', function() {
+    document.querySelectorAll('#filterPills .pill').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+    activeFilter = this.dataset.filter;
+    renderJobList();
+  });
+});
+
+document.getElementById('searchInput').addEventListener('input', function() {
+  searchQuery = this.value;
+  renderJobList();
+});
+
+document.getElementById('applyModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+renderJobList();
+if (jobs.length > 0) selectJob(jobs[0].id);
+</script>
+</body>
+</html>

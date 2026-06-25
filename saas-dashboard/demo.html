@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <meta name="description" content="Interactive demo of SaaS Dashboard with subscription billing, team management, and revenue analytics. React + Stripe portfolio project.">
+  <meta property="og:title" content="SaaS Dashboard Demo">
+  <meta property="og:description" content="Interactive demo of the SaaS Dashboard with subscription billing, team management, and revenue analytics.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://mostafaali.dev/saas-dashboard-preview.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SaaS Dashboard Demo">
+  <meta name="twitter:description" content="Interactive demo of the SaaS Dashboard with subscription billing, team management, and revenue analytics.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaaS Dashboard Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" media="print" onload="this.media='all'">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #0b1120; color: #e2e8f0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+a { color: #38bdf8; text-decoration: none; }
+.back-link{position:fixed;top:16px;left:16px;display:inline-flex;align-items:center;gap:6px;color:#64748b;font-size:13px;font-weight:500;z-index:100;background:#131c31;padding:8px 14px;border-radius:8px;border:1px solid #1e293b;transition:color .2s}.back-link:hover{color:#38bdf8}
+.fade-in { animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Login */
+.login-page { display: flex; align-items: center; justify-content: center; min-height: 100vh; width: 100%; padding: 1rem; }
+.login-box { background: #131c31; border: 1px solid #1e293b; border-radius: 16px; padding: 2.5rem; width: 100%; max-width: 400px; }
+.login-box h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; }
+.login-box p { color: #94a3b8; font-size: 0.875rem; margin-bottom: 1.75rem; }
+.login-box label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.375rem; }
+.login-box input { width: 100%; padding: 0.75rem 1rem; background: #0b1120; border: 1px solid #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 0.9rem; outline: none; margin-bottom: 1rem; transition: border-color 0.2s; }
+.login-box input:focus { border-color: #38bdf8; }
+.login-box button { width: 100%; padding: 0.75rem; background: #38bdf8; color: #0b1120; font-weight: 600; border: none; border-radius: 8px; font-size: 0.95rem; cursor: pointer; transition: opacity 0.2s; }
+.login-box button:hover { opacity: 0.85; }
+.login-error { color: #ef4444; font-size: 0.8rem; margin-top: -0.5rem; margin-bottom: 0.75rem; display: none; }
+
+/* Dashboard */
+.dashboard { display: none; width: 100%; min-height: 100vh; }
+.dashboard-inner { display: flex; min-height: 100vh; }
+
+/* Sidebar */
+.sidebar { width: 240px; min-width: 240px; background: #131c31; border-right: 1px solid #1e293b; padding: 1.5rem 0; display: flex; flex-direction: column; height: 100vh; position: sticky; top: 0; }
+.sidebar-logo { padding: 0 1.5rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 0.625rem; }
+.sidebar-logo i { color: #38bdf8; font-size: 1.5rem; }
+.sidebar-logo span { font-size: 1.25rem; font-weight: 700; }
+.sidebar nav { flex: 1; }
+.nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.5rem; color: #94a3b8; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; font-weight: 500; border-left: 3px solid transparent; }
+.nav-item:hover { color: #e2e8f0; background: rgba(56, 189, 248, 0.05); }
+.nav-item.active { color: #38bdf8; background: rgba(56, 189, 248, 0.1); border-left-color: #38bdf8; }
+.nav-item i { width: 1.25rem; text-align: center; font-size: 1rem; }
+
+/* Main area */
+.main-area { flex: 1; display: flex; flex-direction: column; }
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; border-bottom: 1px solid #1e293b; background: #131c31; }
+.topbar-left h2 { font-size: 1.25rem; font-weight: 600; }
+.topbar-right { display: flex; align-items: center; gap: 1.25rem; }
+.topbar-date { color: #94a3b8; font-size: 0.85rem; }
+.notif-bell { position: relative; color: #94a3b8; font-size: 1.15rem; cursor: pointer; }
+.notif-badge { position: absolute; top: -6px; right: -8px; background: #ef4444; color: #fff; font-size: 0.65rem; font-weight: 700; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; }
+.avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #38bdf8, #6366f1); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: #fff; cursor: pointer; }
+.logout-btn { background: none; border: 1px solid #1e293b; color: #94a3b8; padding: 0.4rem 0.75rem; border-radius: 6px; cursor: pointer; font-size: 0.8rem; transition: all 0.2s; }
+.logout-btn:hover { color: #ef4444; border-color: #ef4444; }
+
+.content { padding: 2rem; overflow-y: auto; }
+.content-view { display: none; }
+.content-view.active { display: block; }
+
+/* Stat cards */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+.stat-card { background: #131c31; border: 1px solid #1e293b; border-radius: 12px; padding: 1.25rem; }
+.stat-card .stat-label { color: #94a3b8; font-size: 0.8rem; font-weight: 500; margin-bottom: 0.375rem; }
+.stat-card .stat-value { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.375rem; }
+.stat-card .stat-change { font-size: 0.8rem; font-weight: 600; color: #22c55e; display: flex; align-items: center; gap: 0.25rem; }
+
+/* Chart */
+.chart-area { background: #131c31; border: 1px solid #1e293b; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+.chart-area h3 { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; }
+.chart { display: flex; align-items: flex-end; gap: 0.75rem; height: 180px; padding-top: 0.5rem; }
+.chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
+.chart-bar { width: 100%; max-width: 48px; background: linear-gradient(to top, #38bdf8, #6366f1); border-radius: 4px 4px 0 0; cursor: pointer; transition: opacity 0.2s; position: relative; min-height: 4px; }
+.chart-bar:hover { opacity: 0.8; }
+.chart-bar .tooltip { position: absolute; top: -32px; left: 50%; transform: translateX(-50%); background: #1e293b; color: #e2e8f0; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.75rem; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+.chart-bar:hover .tooltip { opacity: 1; }
+.chart-label { font-size: 0.7rem; color: #64748b; margin-top: 0.375rem; }
+
+/* Activity */
+.activity-area { background: #131c31; border: 1px solid #1e293b; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+.activity-area h3 { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; }
+.activity-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid #1e293b; }
+.activity-item:last-child { border-bottom: none; }
+.activity-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+.activity-icon.green { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+.activity-icon.blue { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+.activity-icon.purple { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; }
+.activity-icon.orange { background: rgba(251, 146, 60, 0.15); color: #fb923c; }
+.activity-text { flex: 1; }
+.activity-text .text { font-size: 0.875rem; }
+.activity-text .time { font-size: 0.75rem; color: #64748b; margin-top: 0.125rem; }
+
+/* Row layout */
+.dashboard-row { display: flex; gap: 1.5rem; }
+.dashboard-row .col-left { flex: 1; min-width: 0; }
+.dashboard-row .col-right { width: 280px; min-width: 280px; }
+
+/* Plan card */
+.plan-card-side { background: #131c31; border: 1px solid #1e293b; border-radius: 12px; padding: 1.5rem; }
+.plan-card-side h4 { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
+.plan-card-side .plan-price { font-size: 1.75rem; font-weight: 700; margin: 0.5rem 0; }
+.plan-card-side .plan-price span { font-size: 0.85rem; font-weight: 400; color: #94a3b8; }
+.plan-card-side ul { list-style: none; margin: 0.75rem 0; }
+.plan-card-side ul li { font-size: 0.85rem; padding: 0.35rem 0; color: #94a3b8; display: flex; align-items: center; gap: 0.5rem; }
+.plan-card-side ul li i { color: #22c55e; font-size: 0.75rem; }
+
+/* Billing */
+.billing-toggle { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; }
+.billing-toggle span { font-size: 0.875rem; font-weight: 500; color: #94a3b8; }
+.billing-toggle span.active { color: #e2e8f0; }
+.toggle-switch { width: 44px; height: 24px; background: #1e293b; border-radius: 12px; cursor: pointer; position: relative; transition: background 0.2s; }
+.toggle-switch.active { background: #38bdf8; }
+.toggle-switch .toggle-knob { width: 18px; height: 18px; background: #fff; border-radius: 50%; position: absolute; top: 3px; left: 3px; transition: transform 0.2s; }
+.toggle-switch.active .toggle-knob { transform: translateX(20px); }
+.plan-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.plan-card { background: #131c31; border: 1px solid #1e293b; border-radius: 12px; padding: 1.5rem; text-align: center; transition: border-color 0.2s; position: relative; }
+.plan-card.featured { border-color: #38bdf8; }
+.plan-card .plan-name { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
+.plan-card .plan-desc { color: #94a3b8; font-size: 0.8rem; margin-bottom: 0.75rem; }
+.plan-card .plan-price-num { font-size: 2rem; font-weight: 700; }
+.plan-card .plan-price-num span { font-size: 0.85rem; font-weight: 400; color: #94a3b8; }
+.plan-card ul { list-style: none; margin: 1rem 0; text-align: left; }
+.plan-card ul li { font-size: 0.8rem; padding: 0.35rem 0; color: #94a3b8; display: flex; align-items: center; gap: 0.5rem; }
+.plan-card ul li i { color: #22c55e; font-size: 0.7rem; }
+.plan-badge { display: inline-block; padding: 0.25rem 0.75rem; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+.plan-btn { width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid #1e293b; background: transparent; color: #e2e8f0; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; }
+.plan-btn:hover { border-color: #38bdf8; color: #38bdf8; }
+.plan-btn.current { background: #38bdf8; color: #0b1120; border-color: #38bdf8; font-weight: 600; }
+.plan-btn.current:hover { opacity: 0.85; }
+
+/* Team */
+.team-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.team-header h3 { font-size: 1rem; font-weight: 600; }
+.invite-btn { padding: 0.5rem 1rem; background: #38bdf8; color: #0b1120; border: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: opacity 0.2s; }
+.invite-btn:hover { opacity: 0.85; }
+.team-table { width: 100%; border-collapse: collapse; background: #131c31; border: 1px solid #1e293b; border-radius: 12px; overflow: hidden; }
+.team-table th { text-align: left; padding: 0.875rem 1rem; font-size: 0.75rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(15, 23, 42, 0.5); border-bottom: 1px solid #1e293b; }
+.team-table td { padding: 0.875rem 1rem; font-size: 0.875rem; border-bottom: 1px solid #1e293b; }
+.team-table tr:last-child td { border-bottom: none; }
+.role-badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
+.role-badge.admin { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; }
+.role-badge.member { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+.role-badge.viewer { background: rgba(234, 179, 8, 0.15); color: #eab308; }
+
+/* Settings */
+.settings-section { background: #131c31; border: 1px solid #1e293b; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+.settings-section h4 { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
+.settings-section p { color: #94a3b8; font-size: 0.85rem; margin-bottom: 1rem; }
+.settings-section input, .settings-section select { width: 100%; max-width: 400px; padding: 0.625rem 0.875rem; background: #0b1120; border: 1px solid #1e293b; border-radius: 6px; color: #e2e8f0; font-size: 0.875rem; outline: none; margin-bottom: 0.75rem; }
+.settings-section input:focus { border-color: #38bdf8; }
+.save-btn { padding: 0.5rem 1.25rem; background: #38bdf8; color: #0b1120; border: none; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; }
+
+/* Milestones section */
+.milestones { margin-top: 1rem; }
+.milestone { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; }
+.milestone-bar { flex: 1; height: 6px; background: #1e293b; border-radius: 3px; overflow: hidden; }
+.milestone-bar-fill { height: 100%; background: linear-gradient(90deg, #38bdf8, #6366f1); border-radius: 3px; transition: width 0.5s ease; }
+.milestone-label { font-size: 0.8rem; color: #94a3b8; min-width: 100px; }
+.milestone-val { font-size: 0.8rem; font-weight: 600; min-width: 40px; text-align: right; }
+</style>
+</head>
+<body>
+
+<a href="../index.html" class="back-link"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Portfolio</a>
+
+<!-- ========== LOGIN PAGE ========== -->
+<div id="loginPage" class="login-page fade-in">
+  <div class="login-box">
+    <h1><i class="fas fa-rocket" style="color:#38bdf8;margin-right:8px;"></i>SaaS Dashboard</h1>
+    <p>Sign in to your dashboard</p>
+    <label for="loginEmail">Email</label> <input type="email" id="loginEmail" placeholder="you@company.com" value="demo@saaspro.com">
+    <label for="loginPassword">Password</label> <input type="password" id="loginPassword" placeholder="••••••••" value="demo123">
+    <div class="login-error" id="loginError" role="alert" aria-live="assertive">Invalid email or password</div>
+    <button onclick="handleLogin()">Sign In</button>
+    <p style="margin-top:1rem;text-align:center;font-size:0.8rem;color:#64748b;">Demo: demo@saaspro.com / demo123</p>
+  </div>
+</div>
+
+<!-- ========== DASHBOARD ========== -->
+<div id="dashboard" class="dashboard">
+  <div class="dashboard-inner">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <i class="fas fa-rocket"></i>
+        <span>SaaS Dashboard</span>
+      </div>
+      <nav>
+        <div class="nav-item active" data-view="overview" onclick="switchView('overview')">
+          <i class="fas fa-th-large"></i> Overview
+        </div>
+        <div class="nav-item" data-view="billing" onclick="switchView('billing')">
+          <i class="fas fa-credit-card"></i> Billing
+        </div>
+        <div class="nav-item" data-view="team" onclick="switchView('team')">
+          <i class="fas fa-users"></i> Team
+        </div>
+        <div class="nav-item" data-view="settings" onclick="switchView('settings')">
+          <i class="fas fa-cog"></i> Settings
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <div class="main-area">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <h2 id="pageTitle">Dashboard</h2>
+        </div>
+        <div class="topbar-right">
+          <span class="topbar-date" id="dateDisplay"></span>
+          <div class="notif-bell">
+            <i class="fas fa-bell"></i>
+            <span class="notif-badge">3</span>
+          </div>
+          <div class="avatar">JD</div>
+          <button class="logout-btn" onclick="handleLogout()">Sign Out</button>
+        </div>
+      </header>
+
+      <!-- Content Views -->
+      <div class="content">
+
+        <!-- OVERVIEW -->
+        <div id="view-overview" class="content-view active">
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-label">Total Revenue</div><div class="stat-value">$45,231</div><div class="stat-change"><i class="fas fa-arrow-up"></i>12.5%</div></div>
+            <div class="stat-card"><div class="stat-label">Active Users</div><div class="stat-value">2,340</div><div class="stat-change"><i class="fas fa-arrow-up"></i>8.2%</div></div>
+            <div class="stat-card"><div class="stat-label">MRR</div><div class="stat-value">$12,847</div><div class="stat-change"><i class="fas fa-arrow-up"></i>15.3%</div></div>
+            <div class="stat-card"><div class="stat-label">Subscribers</div><div class="stat-value">1,024</div><div class="stat-change"><i class="fas fa-arrow-up"></i>5.7%</div></div>
+          </div>
+
+          <div class="dashboard-row">
+            <div class="col-left">
+              <div class="chart-area">
+                <h3>Revenue <span style="color:#94a3b8;font-weight:400;">(Jan - Jun 2026)</span></h3>
+                <div class="chart" id="revenueChart"></div>
+              </div>
+
+              <div class="activity-area">
+                <h3>Recent Activity</h3>
+                <div id="activityList"></div>
+              </div>
+            </div>
+            <div class="col-right">
+              <div class="plan-card-side">
+                <h4>Current Plan</h4>
+                <div class="plan-price">$99<span>/month</span></div>
+                <div class="plan-badge">Business</div>
+                <ul>
+                  <li><i class="fas fa-check"></i> Up to 50 team members</li>
+                  <li><i class="fas fa-check"></i> 500 GB storage</li>
+                  <li><i class="fas fa-check"></i> Priority support</li>
+                  <li><i class="fas fa-check"></i> Advanced analytics</li>
+                  <li><i class="fas fa-check"></i> Custom integrations</li>
+                </ul>
+              </div>
+
+              <div style="margin-top:1rem;">
+                <div class="plan-card-side">
+                  <h4>Milestones</h4>
+                  <div class="milestones">
+                    <div class="milestone"><span class="milestone-label">Revenue goal</span><div class="milestone-bar"><div class="milestone-bar-fill" style="width:68%"></div></div><span class="milestone-val">68%</span></div>
+                    <div class="milestone"><span class="milestone-label">User target</span><div class="milestone-bar"><div class="milestone-bar-fill" style="width:45%"></div></div><span class="milestone-val">45%</span></div>
+                    <div class="milestone"><span class="milestone-label">Subscribers</span><div class="milestone-bar"><div class="milestone-bar-fill" style="width:82%"></div></div><span class="milestone-val">82%</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BILLING -->
+        <div id="view-billing" class="content-view">
+          <div class="billing-toggle">
+            <span id="billingMonthlyLabel">Monthly</span>
+            <div class="toggle-switch" id="billingToggle" onclick="toggleBilling()">
+              <div class="toggle-knob"></div>
+            </div>
+            <span class="active" id="billingYearlyLabel">Yearly <span style="color:#22c55e;font-size:0.75rem;">Save 20%</span></span>
+          </div>
+          <div class="plan-cards" id="planCards"></div>
+        </div>
+
+        <!-- TEAM -->
+        <div id="view-team" class="content-view">
+          <div class="team-header">
+            <h3>Team Members</h3>
+            <button class="invite-btn" onclick="inviteMember()"><i class="fas fa-plus" style="margin-right:6px;"></i>Invite Member</button>
+          </div>
+          <table class="team-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th></tr></thead>
+            <tbody id="teamBody"></tbody>
+          </table>
+        </div>
+
+        <!-- SETTINGS -->
+        <div id="view-settings" class="content-view">
+          <div class="settings-section">
+            <h4>Profile</h4>
+            <p>Update your account details</p>
+            <label style="display:block;font-size:0.8rem;margin-bottom:0.25rem;">Display Name</label>
+            <input type="text" value="John Doe">
+            <label style="display:block;font-size:0.8rem;margin-bottom:0.25rem;">Email</label>
+            <input type="email" value="john@saaspro.com">
+            <button class="save-btn" onclick="this.textContent='Saved!';setTimeout(()=>this.textContent='Save Changes',1500)">Save Changes</button>
+          </div>
+          <div class="settings-section">
+            <h4>Notifications</h4>
+            <p>Manage your notification preferences</p>
+            <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;"><input type="checkbox" checked> Email notifications</label>
+            <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;margin-top:0.5rem;"><input type="checkbox" checked> Push notifications</label>
+            <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;margin-top:0.5rem;"><input type="checkbox"> SMS alerts</label>
+          </div>
+        </div>
+
+      </div><!-- /content -->
+    </div><!-- /main-area -->
+  </div><!-- /dashboard-inner -->
+</div><!-- /dashboard -->
+
+<script>
+/* ========== DATA ========== */
+const revenueData = [
+  { month: 'Jan', value: 28400 },
+  { month: 'Feb', value: 32100 },
+  { month: 'Mar', value: 35800 },
+  { month: 'Apr', value: 39200 },
+  { month: 'May', value: 42700 },
+  { month: 'Jun', value: 45231 },
+];
+
+const activities = [
+  { icon: 'fa-star', cls: 'green', text: 'New subscription: Acme Corp', time: '2 min ago' },
+  { icon: 'fa-dollar-sign', cls: 'blue', text: 'Payment received: $899', time: '15 min ago' },
+  { icon: 'fa-user-plus', cls: 'purple', text: 'Team member added: Sarah K.', time: '1 hour ago' },
+  { icon: 'fa-arrow-up', cls: 'orange', text: 'Plan upgraded: Starter → Pro', time: '3 hours ago' },
+  { icon: 'fa-user', cls: 'green', text: 'New user registered', time: '5 hours ago' },
+];
+
+const teamMembers = [
+  { name: 'John Doe', email: 'john@saaspro.com', role: 'Admin' },
+  { name: 'Sarah K.', email: 'sarah@saaspro.com', role: 'Member' },
+  { name: 'Mike R.', email: 'mike@saaspro.com', role: 'Member' },
+  { name: 'Emma L.', email: 'emma@saaspro.com', role: 'Viewer' },
+  { name: 'Alex C.', email: 'alex@saaspro.com', role: 'Member' },
+];
+
+let billingPeriod = 'yearly'; // monthly / yearly
+
+/* ========== RENDER FUNCTIONS ========== */
+function renderChart() {
+  const container = document.getElementById('revenueChart');
+  const maxVal = Math.max(...revenueData.map(d => d.value));
+  container.innerHTML = revenueData.map(d => {
+    const pct = (d.value / maxVal) * 100;
+    return `<div class="chart-bar-wrap">
+      <div class="chart-bar" style="height:${pct}%">
+        <div class="tooltip">$${d.value.toLocaleString()}</div>
+      </div>
+      <span class="chart-label">${d.month}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderActivities() {
+  const container = document.getElementById('activityList');
+  container.innerHTML = activities.map(a => `
+    <div class="activity-item">
+      <div class="activity-icon ${a.cls}"><i class="fas ${a.icon}"></i></div>
+      <div class="activity-text"><div class="text">${a.text}</div><div class="time">${a.time}</div></div>
+    </div>
+  `).join('');
+}
+
+function renderTeam() {
+  const tbody = document.getElementById('teamBody');
+  tbody.innerHTML = teamMembers.map(m => `
+    <tr>
+      <td><div style="display:flex;align-items:center;gap:0.5rem;"><div class="avatar" style="width:28px;height:28px;font-size:0.65rem;">${m.name.split(' ').map(n=>n[0]).join('')}</div>${m.name}</div></td>
+      <td>${m.email}</td>
+      <td><span class="role-badge ${m.role.toLowerCase()}">${m.role}</span></td>
+    </tr>
+  `).join('');
+}
+
+function renderPlans() {
+  const container = document.getElementById('planCards');
+  const monthly = billingPeriod === 'monthly';
+  const plans = [
+    { name: 'Starter', price: monthly ? 29 : 23, desc: 'For small teams', features: ['Up to 5 team members', '50 GB storage', 'Email support', 'Basic analytics'], featured: false },
+    { name: 'Professional', price: monthly ? 99 : 79, desc: 'For growing businesses', features: ['Up to 50 team members', '500 GB storage', 'Priority support', 'Advanced analytics', 'Custom integrations'], featured: true },
+    { name: 'Enterprise', price: monthly ? 299 : 239, desc: 'For large organizations', features: ['Unlimited team members', 'Unlimited storage', '24/7 dedicated support', 'Enterprise SSO', 'Custom contracts'], featured: false },
+  ];
+  container.innerHTML = plans.map(p => `
+    <div class="plan-card ${p.featured ? 'featured' : ''}">
+      <div class="plan-name">${p.name}</div>
+      <div class="plan-desc">${p.desc}</div>
+      <div class="plan-price-num">$${p.price}<span>/${monthly ? 'mo' : 'mo'}</span></div>
+      <ul>${p.features.map(f => `<li><i class="fas fa-check"></i>${f}</li>`).join('')}</ul>
+      ${p.name === 'Professional' ? '<div class="plan-badge" style="margin-bottom:0.75rem;">Current Plan</div><button class="plan-btn current">Current Plan</button>' : '<button class="plan-btn" onclick="alert(\'Switching to ' + p.name + ' plan...\')">Upgrade</button>'}
+    </div>
+  `).join('');
+}
+
+/* ========== NAVIGATION ========== */
+function switchView(view) {
+  document.querySelectorAll('.content-view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+  document.querySelector(`.nav-item[data-view="${view}"]`).classList.add('active');
+
+  const titles = { overview: 'Dashboard', billing: 'Billing', team: 'Team', settings: 'Settings' };
+  document.getElementById('pageTitle').textContent = titles[view];
+}
+
+/* ========== BILLING TOGGLE ========== */
+function toggleBilling() {
+  const toggle = document.getElementById('billingToggle');
+  toggle.classList.toggle('active');
+  billingPeriod = toggle.classList.contains('active') ? 'yearly' : 'monthly';
+  document.getElementById('billingMonthlyLabel').classList.toggle('active', billingPeriod === 'monthly');
+  document.getElementById('billingYearlyLabel').classList.toggle('active', billingPeriod === 'yearly');
+  renderPlans();
+}
+
+/* ========== AUTH ========== */
+function handleLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const pass = document.getElementById('loginPassword').value;
+  const feedback = document.getElementById('loginFeedback');
+  if (email === 'demo@saaspro.com' && pass === 'demo123') {
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    if (feedback) { feedback.textContent = 'Login successful'; feedback.style.display = 'block'; }
+    initDashboard();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+    if (feedback) { feedback.textContent = 'Login failed: invalid credentials'; feedback.style.display = 'block'; }
+  }
+}
+
+function handleLogout() {
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('loginError').style.display = 'none';
+}
+
+/* ========== TEAM ========== */
+function inviteMember() {
+  const name = prompt('Enter member name:');
+  if (!name) return;
+  const email = prompt('Enter email:');
+  if (!email) return;
+  teamMembers.push({ name, email, role: 'Member' });
+  renderTeam();
+}
+
+/* ========== DATE ========== */
+function updateDate() {
+  const d = new Date();
+  document.getElementById('dateDisplay').textContent = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+/* ========== INIT ========== */
+function initDashboard() {
+  renderChart();
+  renderActivities();
+  renderTeam();
+  renderPlans();
+  updateDate();
+  switchView('overview');
+}
+
+/* Enter key on login */
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('loginPassword').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+  document.getElementById('loginEmail').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+});
+</script>
+</body>
+</html>

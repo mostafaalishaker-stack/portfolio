@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <meta name="description" content="Full online store with product catalog, cart, checkout, order history, and admin dashboard. Built with Angular, Node.js, MongoDB.">
+  <meta property="og:title" content="E-commerce Platform - Mostafa Ali Portfolio">
+  <meta property="og:description" content="Full-featured e-commerce platform with product management, shopping cart, Stripe payments, and admin dashboard.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mostafaali.dev/ecommerce-platform/">
+  <meta property="og:image" content="https://mostafaali.dev/profile.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="E-commerce Platform - Mostafa Ali Portfolio">
+  <meta name="twitter:description" content="Full-featured e-commerce platform with product management, shopping cart, Stripe payments, and admin dashboard.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Commerce Platform – Project Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" media="print" onload="this.media='all'">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',-apple-system,sans-serif;background:#0b1120;color:#e2e8f0;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  .container{max-width:1100px;margin:0 auto;padding:0 24px}
+
+  .back-link{display:inline-flex;align-items:center;gap:8px;color:#64748b;font-size:14px;font-weight:500;padding:16px 0;transition:color .2s}
+  .back-link:hover{color:#06b6d4}
+  .back-link i{font-size:12px}
+
+  .hero{text-align:center;padding:60px 0 40px}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.28);color:#67e8f9;padding:8px 18px;border-radius:999px;font-size:13px;font-weight:600;letter-spacing:.3px;margin-bottom:24px}
+  .hero-badge i{color:#22d3ee}
+  .hero-title{font-size:clamp(2.4rem,6vw,4rem);font-weight:900;line-height:1.1;letter-spacing:-1.5px;background:linear-gradient(135deg,#06b6d4,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:16px}
+  .hero-desc{font-size:18px;color:#94a3b8;max-width:640px;margin:0 auto;font-weight:400}
+
+  .mockup{background:linear-gradient(145deg,#111827,#0f172a);border:1px solid rgba(6,182,212,.18);border-radius:16px;padding:28px;margin:48px 0;box-shadow:0 25px 50px -12px rgba(0,0,0,.7)}
+
+  .mockup-navbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(30,41,59,.7);border-radius:10px;margin-bottom:20px;border:1px solid rgba(148,163,184,.08)}
+  .mockup-navbar-left{display:flex;align-items:center;gap:10px}
+  .mockup-navbar-left .logo{width:28px;height:28px;background:linear-gradient(135deg,#06b6d4,#3b82f6);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700}
+  .mockup-navbar-left span{font-weight:600;font-size:14px;color:#e2e8f0}
+  .mockup-navbar-right{display:flex;align-items:center;gap:14px}
+  .mockup-navbar-right .cart-icon{position:relative;font-size:16px;color:#94a3b8}
+  .mockup-navbar-right .cart-badge{position:absolute;top:-6px;right:-8px;width:16px;height:16px;background:#06b6d4;border-radius:50%;font-size:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+  .mockup-navbar-right .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#06b6d4,#3b82f6);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:600}
+
+  .mockup-body{display:flex;gap:16px}
+  .mockup-sidebar{width:220px;flex-shrink:0;background:rgba(30,41,59,.5);border-radius:10px;padding:16px;border:1px solid rgba(148,163,184,.06)}
+  .mockup-sidebar-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#475569;margin-bottom:10px}
+  .mockup-sidebar-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;font-size:13px;color:#94a3b8;margin-bottom:2px;cursor:default}
+  .mockup-sidebar-item.active{background:rgba(6,182,212,.12);color:#67e8f9}
+  .mockup-sidebar-item .count{background:rgba(148,163,184,.12);padding:1px 7px;border-radius:999px;font-size:11px;color:#64748b;margin-left:auto}
+  .mockup-sidebar-divider{height:1px;background:rgba(148,163,184,.1);margin:12px 0}
+  .mockup-sidebar-checkbox{display:flex;align-items:center;gap:8px;padding:6px 10px;font-size:12px;color:#64748b;cursor:default}
+  .mockup-sidebar-checkbox .box{width:14px;height:14px;border-radius:3px;border:1.5px solid #475569;flex-shrink:0}
+  .mockup-sidebar-checkbox .box.checked{background:#06b6d4;border-color:#06b6d4;display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff}
+
+  .mockup-grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .mockup-product{background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.08);border-radius:10px;overflow:hidden;transition:border-color .2s}
+  .mockup-product:hover{border-color:rgba(6,182,212,.3)}
+  .mockup-product-img{height:110px;background:linear-gradient(135deg,rgba(6,182,212,.12),rgba(59,130,246,.08));display:flex;align-items:center;justify-content:center;font-size:28px;color:rgba(6,182,212,.25)}
+  .mockup-product-body{padding:10px 12px 12px}
+  .mockup-product-body h4{font-size:12px;font-weight:600;color:#e2e8f0;margin-bottom:2px}
+  .mockup-product-body .category{font-size:10px;color:#475569;margin-bottom:6px}
+  .mockup-product-body .price{font-size:15px;font-weight:700;color:#22d3ee;margin-bottom:8px}
+  .mockup-product-body .price del{font-size:11px;color:#475569;font-weight:400;margin-left:6px}
+  .mockup-product-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:6px 0;border-radius:6px;background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.2);color:#67e8f9;font-size:11px;font-weight:600;cursor:default;transition:background .2s}
+  .mockup-product-btn:hover{background:rgba(6,182,212,.2)}
+
+  .section-title{font-size:20px;font-weight:700;color:#e2e8f0;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+  .section-title i{color:#22d3ee;font-size:18px}
+
+  .features-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:56px}
+  .feature-card{background:rgba(30,41,59,.4);border:1px solid rgba(148,163,184,.08);border-radius:12px;padding:20px;transition:border-color .2s,transform .2s}
+  .feature-card:hover{border-color:rgba(6,182,212,.28);transform:translateY(-2px)}
+  .feature-card-icon{width:40px;height:40px;border-radius:10px;background:rgba(6,182,212,.12);display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:16px;color:#22d3ee}
+  .feature-card h3{font-size:15px;font-weight:600;color:#f1f5f9;margin-bottom:4px}
+  .feature-card p{font-size:13px;color:#64748b}
+
+  .tech-tags{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:56px}
+  .tech-tag{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:600;border:1px solid;display:inline-flex;align-items:center;gap:6px}
+  .tech-tag.angular{background:rgba(221,48,48,.1);border-color:rgba(221,48,48,.25);color:#fca5a5}
+  .tech-tag.ts{background:rgba(49,120,198,.1);border-color:rgba(49,120,198,.25);color:#93c5fd}
+  .tech-tag.dotnet{background:rgba(104,33,122,.1);border-color:rgba(104,33,122,.25);color:#d8b4fe}
+  .tech-tag.csharp{background:rgba(152,96,194,.1);border-color:rgba(152,96,194,.25);color:#c4b5fd}
+  .tech-tag.sql{background:rgba(162,68,52,.1);border-color:rgba(162,68,52,.25);color:#fdba74}
+  .tech-tag.efcore{background:rgba(0,168,143,.1);border-color:rgba(0,168,143,.25);color:#5eead4}
+  .tech-tag.identity{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.25);color:#93c5fd}
+  .tech-tag.jwt{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.25);color:#fcd34d}
+
+  .arch-tree{background:rgba(30,41,59,.3);border:1px solid rgba(148,163,184,.08);border-radius:12px;padding:20px 24px;margin-bottom:56px;overflow-x:auto}
+  .arch-tree pre{font-family:'JetBrains Mono','Fira Code',monospace;font-size:13px;line-height:1.8;color:#94a3b8}
+  .arch-tree .dir{color:#22d3ee;font-weight:600}
+  .arch-tree .file{color:#cbd5e1}
+  .arch-tree .comment{color:#475569;font-style:italic}
+  .arch-tree .highlight{color:#fcd34d}
+
+  .code-block{background:rgba(15,23,42,.8);border:1px solid rgba(148,163,184,.1);border-radius:12px;overflow:hidden;margin-bottom:56px}
+  .code-block-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(30,41,59,.5);border-bottom:1px solid rgba(148,163,184,.08);font-size:13px;color:#64748b}
+  .code-block-header i{margin-right:6px}
+  .code-block pre{padding:16px;overflow-x:auto;font-family:'JetBrains Mono','Fira Code',monospace;font-size:13px;line-height:1.7;color:#e2e8f0}
+  .code-block .kw{color:#22d3ee}
+  .code-block .str{color:#a3e635}
+  .code-block .cm{color:#475569}
+  .code-block .fn{color:#fcd34d}
+
+  .footer{text-align:center;padding:40px 0 60px;border-top:1px solid rgba(148,163,184,.06)}
+  .footer a{display:inline-flex;align-items:center;gap:8px;color:#64748b;font-size:14px;font-weight:500;transition:color .2s}
+  .footer a:hover{color:#22d3ee}
+
+  @media(max-width:800px){.mockup-body{flex-direction:column}.mockup-sidebar{width:100%}.mockup-grid{grid-template-columns:repeat(2,1fr)}.features-grid{grid-template-columns:1fr}.container{padding:0 16px}.hero{padding:40px 0 24px}}
+  @media(max-width:480px){.mockup-grid{grid-template-columns:1fr}}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "E-Commerce Platform",
+  "applicationCategory": "E-Commerce",
+  "operatingSystem": "Windows, Linux, macOS",
+  "author": { "@type": "Person", "name": "Mostafa Ali" },
+  "description": "Full-featured e-commerce platform with product management, shopping cart, Stripe payments, and admin dashboard."
+}
+</script>
+</head>
+<body>
+
+<div class="container">
+  <a href="../" class="back-link"><i class="fas fa-arrow-left"></i> Back to Portfolio</a>
+
+  <section class="hero">
+    <div class="hero-badge"><i class="fas fa-shopping-cart"></i> Angular + Node.js + MongoDB</div>
+    <h1 class="hero-title">E-Commerce Platform</h1>
+    <p class="hero-desc">An online store showcase with JWT authentication, product catalog management, shopping cart, and admin dashboard.</p>
+  </section>
+
+  <div class="mockup">
+    <div class="mockup-navbar">
+      <div class="mockup-navbar-left">
+        <div class="logo">S</div>
+        <span>ShopEase</span>
+      </div>
+      <div class="mockup-navbar-right">
+        <i class="fas fa-search" style="font-size:14px;color:#475569"></i>
+        <i class="fas fa-heart" style="font-size:14px;color:#475569"></i>
+        <div class="cart-icon"><i class="fas fa-shopping-cart"></i><span class="cart-badge">3</span></div>
+        <div class="avatar">AM</div>
+      </div>
+    </div>
+    <div class="mockup-body">
+      <div class="mockup-sidebar">
+        <div class="mockup-sidebar-title">Categories</div>
+        <div class="mockup-sidebar-item active">All Products <span class="count">24</span></div>
+        <div class="mockup-sidebar-item">Electronics <span class="count">8</span></div>
+        <div class="mockup-sidebar-item">Clothing <span class="count">6</span></div>
+        <div class="mockup-sidebar-item">Home & Garden <span class="count">5</span></div>
+        <div class="mockup-sidebar-item">Books <span class="count">5</span></div>
+        <div class="mockup-sidebar-divider"></div>
+        <div class="mockup-sidebar-title">Price Range</div>
+        <div class="mockup-sidebar-checkbox"><span class="box checked"><i class="fas fa-check"></i></span> Under $25</div>
+        <div class="mockup-sidebar-checkbox"><span class="box"></span> $25 – $50</div>
+        <div class="mockup-sidebar-checkbox"><span class="box"></span> $50 – $100</div>
+        <div class="mockup-sidebar-checkbox"><span class="box"></span> $100+</div>
+        <div class="mockup-sidebar-divider"></div>
+        <div class="mockup-sidebar-title">Rating</div>
+        <div class="mockup-sidebar-checkbox"><span class="box checked"><i class="fas fa-check"></i></span> 4★ & up</div>
+        <div class="mockup-sidebar-checkbox"><span class="box"></span> 3★ & up</div>
+      </div>
+      <div class="mockup-grid">
+        <div class="mockup-product">
+          <div class="mockup-product-img"><i class="fas fa-headphones"></i></div>
+          <div class="mockup-product-body">
+            <h4>Wireless Headphones</h4>
+            <div class="category">Electronics</div>
+            <div class="price">$79.99 <del>$129.99</del></div>
+            <div class="mockup-product-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</div>
+          </div>
+        </div>
+        <div class="mockup-product">
+          <div class="mockup-product-img"><i class="fas fa-tshirt"></i></div>
+          <div class="mockup-product-body">
+            <h4>Cotton Crew T-Shirt</h4>
+            <div class="category">Clothing</div>
+            <div class="price">$24.99</div>
+            <div class="mockup-product-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</div>
+          </div>
+        </div>
+        <div class="mockup-product">
+          <div class="mockup-product-img"><i class="fas fa-couch"></i></div>
+          <div class="mockup-product-body">
+            <h4>Minimalist Desk Lamp</h4>
+            <div class="category">Home & Garden</div>
+            <div class="price">$45.00</div>
+            <div class="mockup-product-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</div>
+          </div>
+        </div>
+        <div class="mockup-product">
+          <div class="mockup-product-img"><i class="fas fa-laptop"></i></div>
+          <div class="mockup-product-body">
+            <h4>Ultrabook Pro 14</h4>
+            <div class="category">Electronics</div>
+            <div class="price">$1,299.00</div>
+            <div class="mockup-product-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</div>
+          </div>
+        </div>
+        <div class="mockup-product">
+          <div class="mockup-product-img"><i class="fas fa-book"></i></div>
+          <div class="mockup-product-body">
+            <h4>Clean Code</h4>
+            <div class="category">Books</div>
+            <div class="price">$34.99</div>
+            <div class="mockup-product-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</div>
+          </div>
+        </div>
+        <div class="mockup-product">
+          <div class="mockup-product-img"><i class="fas fa-watch"></i></div>
+          <div class="mockup-product-body">
+            <h4>Smart Watch Series 3</h4>
+            <div class="category">Electronics</div>
+            <div class="price">$249.99 <del>$299.99</del></div>
+            <div class="mockup-product-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="section">
+  <div class="section-title"><i class="fas fa-bullseye"></i> Case Study</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+    <div class="feature-card"><i class="fas fa-exclamation-triangle" style="color:#f59e0b"></i><h4>Problem</h4><p>Small businesses need an affordable, full-featured e-commerce platform without monthly subscription fees.</p></div>
+    <div class="feature-card"><i class="fas fa-lightbulb" style="color:#8b5cf6"></i><h4>Solution</h4><p>Developed a complete e-commerce platform with Angular frontend and Node.js backend with MongoDB featuring product management, shopping cart, order tracking, and admin dashboard.</p></div>
+    <div class="feature-card"><i class="fas fa-chart-line" style="color:#22c55e"></i><h4>Result</h4><p>Self-hosted e-commerce platform with JWT authentication, role-based access, and full CRUD product management.</p></div>
+  </div>
+</section>
+
+  <h2 class="section-title"><i class="fas fa-star"></i> Features</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-card-icon"><i class="fas fa-shield-alt"></i></div>
+      <h3>JWT Authentication</h3>
+      <p>Secure authentication with JWT token-based authorization.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon"><i class="fas fa-boxes"></i></div>
+      <h3>Product Catalog with Categories</h3>
+      <p>Full CRUD for products with category filtering and search.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon"><i class="fas fa-shopping-cart"></i></div>
+      <h3>Shopping Cart</h3>
+      <p>Persistent cart with quantity controls and total calculation.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon"><i class="fas fa-history"></i></div>
+      <h3>Order History</h3>
+      <p>Order tracking with status updates.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon"><i class="fas fa-chart-bar"></i></div>
+      <h3>Admin Dashboard</h3>
+      <p>Order management dashboard for administrators.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon"><i class="fas fa-user-tag"></i></div>
+      <h3>Role-based Auth</h3>
+      <p>Role-based access with Admin and Customer roles via Identity policies.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title"><i class="fas fa-code"></i> Tech Stack</h2>
+  <div class="tech-tags">
+    <span class="tech-tag angular"><i class="fab fa-angular"></i> Angular 18</span>
+    <span class="tech-tag ts"><i class="fab fa-js"></i> TypeScript</span>
+    <span class="tech-tag sql"><i class="fas fa-database"></i> MongoDB</span>
+    <span class="tech-tag jwt"><i class="fas fa-key"></i> JWT</span>
+  </div>
+
+  <h2 class="section-title"><i class="fas fa-sitemap"></i> Project Structure</h2>
+  <div class="arch-tree">
+<pre><span class="dir">backend/</span>
+  <span class="file">├── server.js</span>
+  <span class="file">├── package.json</span>
+  <span class="file">├── config/</span>
+  <span class="file">│   └── db.js</span>
+  <span class="file">├── controllers/</span>
+  <span class="file">│   ├── authController.js</span>
+  <span class="file">│   ├── productController.js</span>
+  <span class="file">│   └── orderController.js</span>
+  <span class="file">├── models/</span>
+  <span class="file">│   ├── Product.js</span>
+  <span class="file">│   └── Order.js</span>
+  <span class="file">├── middleware/</span>
+  <span class="file">│   └── auth.js</span>
+  <span class="file">├── routes/</span>
+  <span class="file">│   ├── auth.js</span>
+  <span class="file">│   ├── products.js</span>
+  <span class="file">│   └── orders.js</span>
+  <span class="file">└── utils/</span>
+  <span class="file">    └── helpers.js</span>
+<span class="dir">frontend/</span>
+  <span class="file">├── src/</span>
+  <span class="file">│   ├── index.html</span>
+  <span class="file">│   ├── main.ts</span>
+  <span class="file">│   ├── styles.css</span>
+  <span class="file">│   └── app/</span>
+  <span class="file">│       ├── app.component.ts</span>
+  <span class="file">│       ├── app.routes.ts</span>
+  <span class="file">│       ├── components/</span>
+  <span class="file">│       │   └── navbar.component.ts</span>
+  <span class="file">│       ├── pages/</span>
+  <span class="file">│       │   ├── products/</span>
+  <span class="file">│       │   ├── cart/</span>
+  <span class="file">│       │   ├── auth/</span>
+  <span class="file">│       │   └── admin/</span>
+  <span class="file">│       ├── services/</span>
+  <span class="file">│       │   ├── api.service.ts</span>
+  <span class="file">│       │   ├── auth.interceptor.ts</span>
+  <span class="file">│       │   └── cart.service.ts</span>
+  <span class="file">│       ├── models/</span>
+  <span class="file">│       │   ├── product.model.ts</span>
+  <span class="file">│       │   └── order.model.ts</span>
+  <span class="file">│       └── guards/</span>
+  <span class="file">│           └── auth.guard.ts</span>
+  <span class="file">├── angular.json</span>
+  <span class="file">├── tailwind.config.js</span>
+  <span class="file">├── postcss.config.js</span>
+  <span class="file">├── proxy.conf.json</span>
+  <span class="file">└── package.json</span></pre>
+  </div>
+
+  <h2 class="section-title"><i class="fas fa-terminal"></i> Quick Start</h2>
+  <div class="code-block">
+    <div class="code-block-header"><span><i class="fas fa-terminal"></i> Terminal</span><span style="color:#475569">bash</span></div>
+<pre><span class="cm"># Clone the repository</span>
+git clone https://github.com/mostafaali/ecommerce-platform.git
+cd ecommerce-platform
+
+<span class="cm"># Set up the backend</span>
+cd backend
+dotnet restore
+dotnet run
+<span class="cm"># Database is auto-created via EnsureCreated()</span>
+
+<span class="cm"># In another terminal – set up the frontend</span>
+cd frontend
+npm install
+<span class="kw">ng serve</span></pre>
+  </div>
+
+  <footer class="footer">
+    <a href="https://github.com/mostafaali/ecommerce-platform" target="_blank"><i class="fab fa-github"></i> View on GitHub</a>
+  </footer>
+</div>
+
+</body>
+</html>

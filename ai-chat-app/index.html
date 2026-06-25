@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <meta name="description" content="Real-time AI chat application powered by OpenAI GPT-4 with multi-session management, auto-generated titles, and dark mode interface. Built with React, Node.js, MongoDB.">
+  <meta property="og:title" content="AI Chat App - Mostafa Ali Portfolio">
+  <meta property="og:description" content="Real-time AI chat application powered by OpenAI GPT-4 with multi-session management, auto-generated titles, and dark mode interface.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mostafaali.dev/ai-chat-app/">
+  <meta property="og:image" content="https://mostafaali.dev/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AI Chat App - Mostafa Ali Portfolio">
+  <meta name="twitter:description" content="Real-time AI chat application powered by OpenAI GPT-4 with multi-session management, auto-generated titles, and dark mode interface.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Chat App - Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#0b1120;color:#e2e8f0;line-height:1.6}
+.container{max-width:1040px;margin:0 auto;padding:0 24px}
+.back-link{display:inline-flex;align-items:center;gap:8px;color:#64748b;text-decoration:none;font-size:14px;font-weight:500;margin-top:24px;transition:color .2s}
+.back-link:hover{color:#8b5cf6}
+.hero{padding:60px 0 48px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);color:#a78bfa;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:600;margin-bottom:24px}
+.hero-badge i{color:#8b5cf6}
+.hero h1{font-size:52px;font-weight:800;line-height:1.15;margin-bottom:16px;background:linear-gradient(135deg,#8b5cf6,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{color:#94a3b8;font-size:18px;max-width:640px;margin:0 auto;line-height:1.7}
+/* Mockup */
+.mockup-wrap{margin:48px auto;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.06);box-shadow:0 0 60px rgba(139,92,246,.08),0 20px 60px rgba(0,0,0,.4)}
+.mockup-bar{display:flex;align-items:center;gap:8px;padding:12px 16px;background:#1a1f2e;border-bottom:1px solid rgba(255,255,255,.05)}
+.mockup-dot{width:10px;height:10px;border-radius:50%}
+.dot-r{background:#ef4444}.dot-y{background:#f59e0b}.dot-g{background:#22c55e}
+.mockup-title{color:#64748b;font-size:12px;margin-left:12px;font-weight:500}
+.chat-mock{display:grid;grid-template-columns:280px 1fr;min-height:460px;background:#0f172a}
+.chat-sidebar{background:#0b1120;border-right:1px solid rgba(255,255,255,.04);padding:16px}
+.sidebar-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.sidebar-head span{font-weight:600;font-size:13px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px}
+.sidebar-head i{color:#64748b;font-size:13px;cursor:pointer;padding:6px;border-radius:6px;transition:.2s}
+.sidebar-head i:hover{background:rgba(255,255,255,.04);color:#e2e8f0}
+.chat-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:8px;margin-bottom:4px;transition:.2s}
+.chat-item.active{background:rgba(139,92,246,.12)}
+.chat-item:not(.active):hover{background:rgba(255,255,255,.03)}
+.chat-item .name{font-size:13px;font-weight:500;color:#e2e8f0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-item .date{font-size:11px;color:#475569;margin-left:8px;white-space:nowrap}
+.chat-item i{color:#475569;font-size:11px;opacity:0;transition:.2s}
+.chat-item:hover i{opacity:1}
+.chat-main{display:flex;flex-direction:column;padding:0}
+.chat-header{padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between}
+.chat-header h3{font-size:14px;font-weight:600}
+.chat-header i{color:#64748b;font-size:14px;cursor:pointer;padding:4px;border-radius:4px}
+.chat-header i:hover{background:rgba(255,255,255,.04)}
+.chat-msgs{flex:1;padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+.msg{display:flex;gap:10px;max-width:80%}
+.msg.user{flex-direction:row-reverse;align-self:flex-end}
+.msg.ai{align-self:flex-start}
+.msg-av{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.msg.ai .msg-av{background:#1e293b;color:#8b5cf6}
+.msg.user .msg-av{background:rgba(139,92,246,.2);color:#a78bfa}
+.msg-bubble{padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.55}
+.msg.ai .msg-bubble{background:#1e293b;color:#cbd5e1;border-bottom-left-radius:4px}
+.msg.user .msg-bubble{background:#8b5cf6;color:#fff;border-bottom-right-radius:4px}
+.msg-bubble .time{display:block;font-size:10px;color:#64748b;margin-top:4px;text-align:right}
+.chat-input-wrap{padding:14px 20px;border-top:1px solid rgba(255,255,255,.04);display:flex;gap:10px;align-items:center}
+.chat-input-wrap input{flex:1;background:#1e293b;border:1px solid rgba(255,255,255,.06);padding:10px 14px;border-radius:10px;color:#e2e8f0;font-size:13px;outline:none;transition:.2s}
+.chat-input-wrap input:focus{border-color:#8b5cf6}
+.chat-input-wrap input::placeholder{color:#475569}
+.chat-input-wrap button{width:36px;height:36px;background:#8b5cf6;border:none;border-radius:10px;color:#fff;cursor:pointer;transition:.2s;font-size:14px;display:flex;align-items:center;justify-content:center}
+.chat-input-wrap button:hover{background:#7c3aed} /* indigo-600 hover */
+/* Sections */
+.section{padding:56px 0}
+.section-title{font-size:20px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.section-title i{color:#8b5cf6;font-size:18px}
+.section-sub{color:#64748b;font-size:14px;margin-bottom:32px}
+.features-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.feature-card{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:20px;transition:.25s}
+.feature-card:hover{border-color:rgba(139,92,246,.2);background:rgba(139,92,246,.04);transform:translateY(-2px)}
+.feature-card i{font-size:20px;color:#8b5cf6;margin-bottom:10px}
+.feature-card h4{font-size:14px;font-weight:600;margin-bottom:4px}
+.feature-card p{font-size:13px;color:#64748b}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.tag{padding:5px 14px;border-radius:6px;font-size:12px;font-weight:600;background:rgba(139,92,246,.1);color:#a78bfa;border:1px solid rgba(139,92,246,.12)}
+.tag.ts{background:rgba(49,120,198,.12);color:#60a5fa;border-color:rgba(49,120,198,.18)}
+.tag.node{background:rgba(34,197,94,.1);color:#4ade80;border-color:rgba(34,197,94,.14)}
+.tag.exp{background:rgba(236,72,153,.1);color:#f472b6;border-color:rgba(236,72,153,.14)}
+.tag.mongo{background:rgba(16,185,129,.1);color:#34d399;border-color:rgba(16,185,129,.14)}
+.tag.jwt{background:rgba(245,158,11,.1);color:#fbbf24;border-color:rgba(245,158,11,.14)}
+.tag.tail{background:rgba(6,182,212,.1);color:#22d3ee;border-color:rgba(6,182,212,.14)}
+.tag.openai{background:rgba(16,185,129,.1);color:#34d399;border-color:rgba(16,185,129,.14)}
+/* Tree */
+.tree{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:24px;font-family:'Inter',monospace;font-size:13px;line-height:2;overflow-x:auto}
+.tree .dir{color:#e2e8f0;font-weight:500}
+.tree .file{color:#64748b}
+.tree .depth-1{padding-left:0}
+.tree .depth-2{padding-left:24px}
+.tree .depth-3{padding-left:48px}
+.tree .depth-4{padding-left:72px}
+.tree .highlight{color:#a78bfa}
+.tree i{margin-right:8px;width:16px;text-align:center;font-size:12px}
+.tree .dir i{color:#f59e0b}
+.tree .file i{color:#64748b}
+/* Code */
+.code-block{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:20px 24px;margin-top:16px}
+.code-block .comment{color:#64748b;font-size:13px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.code-block pre{font-family:'Inter',monospace;font-size:13px;color:#e2e8f0;line-height:1.8;overflow-x:auto}
+.code-block .kw{color:#8b5cf6}
+.code-block .str{color:#34d399}
+.code-block .cm{color:#64748b;font-style:italic}
+/* Footer */
+.footer{padding:32px 0 48px;border-top:1px solid rgba(255,255,255,.04);margin-top:16px;text-align:center}
+.footer a{display:inline-flex;align-items:center;gap:8px;color:#64748b;text-decoration:none;font-size:14px;font-weight:500;transition:.2s}
+.footer a:hover{color:#8b5cf6}
+.footer a i{font-size:18px}
+@media(max-width:768px){
+  .hero h1{font-size:32px}
+  .chat-mock{grid-template-columns:1fr;min-height:auto}
+  .chat-sidebar{display:none}
+  .features-grid{grid-template-columns:1fr}
+  .mockup-wrap{margin:32px auto}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Portfolio</a>
+
+<header class="hero">
+  <div class="hero-badge"><i class="fas fa-robot"></i> React + Node.js + OpenAI + MongoDB</div>
+  <h1>AI Chat App</h1>
+  <p>Real-time conversational AI powered by OpenAI's GPT-4 with multi-session management, auto-generated chat titles, and a sleek dark-mode interface.</p>
+</header>
+
+<div class="mockup-wrap">
+  <div class="mockup-bar">
+    <span class="mockup-dot dot-r"></span>
+    <span class="mockup-dot dot-y"></span>
+    <span class="mockup-dot dot-g"></span>
+    <span class="mockup-title"><i class="fas fa-comment-dots" style="margin-right:6px;color:#8b5cf6"></i>AI Chat — New Session</span>
+  </div>
+  <div class="chat-mock">
+    <div class="chat-sidebar">
+      <div class="sidebar-head"><span>Chat History</span><i class="fas fa-plus"></i></div>
+      <div class="chat-item active">
+        <i class="fas fa-comment" style="color:#8b5cf6;margin-right:10px;opacity:1!important"></i>
+        <span class="name">React hooks guide</span>
+        <span class="date">2m ago</span>
+      </div>
+      <div class="chat-item">
+        <i class="fas fa-comment" style="margin-right:10px"></i>
+        <span class="name">TypeScript generics explained</span>
+        <span class="date">1h ago</span>
+      </div>
+      <div class="chat-item">
+        <i class="fas fa-comment" style="margin-right:10px"></i>
+        <span class="name">Debugging Express middleware</span>
+        <span class="date">3h ago</span>
+      </div>
+      <div class="chat-item">
+        <i class="fas fa-comment" style="margin-right:10px"></i>
+        <span class="name">MongoDB aggregation pipeline</span>
+        <span class="date">Yesterday</span>
+      </div>
+      <div class="chat-item">
+        <i class="fas fa-comment" style="margin-right:10px"></i>
+        <span class="name">JWT authentication best practices</span>
+        <span class="date">Yesterday</span>
+      </div>
+      <div class="chat-item">
+        <i class="fas fa-comment" style="margin-right:10px"></i>
+        <span class="name">TailwindCSS grid layout</span>
+        <span class="date">2d ago</span>
+      </div>
+    </div>
+    <div class="chat-main">
+      <div class="chat-header">
+        <h3><i class="fas fa-hashtag" style="color:#8b5cf6;margin-right:8px"></i>React hooks guide</h3>
+        <i class="fas fa-trash-alt"></i>
+      </div>
+      <div class="chat-msgs">
+        <div class="msg user">
+          <div class="msg-av"><i class="fas fa-user"></i></div>
+          <div class="msg-bubble">Can you explain the difference between useEffect and useLayoutEffect?<span class="time">12:34 PM</span></div>
+        </div>
+        <div class="msg ai">
+          <div class="msg-av"><i class="fas fa-bolt"></i></div>
+          <div class="msg-bubble">The main difference is when they fire. <strong>useEffect</strong> runs asynchronously after the browser paints, so users might see a flash if you're mutating the DOM. <strong>useLayoutEffect</strong> runs synchronously before the paint, making it ideal for reading layout or mutating the DOM without flicker. Use <code>useLayoutEffect</code> sparingly — it blocks visual updates.<span class="time">12:34 PM</span></div>
+        </div>
+        <div class="msg user">
+          <div class="msg-av"><i class="fas fa-user"></i></div>
+          <div class="msg-bubble">When would I actually need useLayoutEffect?<span class="time">12:35 PM</span></div>
+        </div>
+        <div class="msg ai">
+          <div class="msg-av"><i class="fas fa-bolt"></i></div>
+          <div class="msg-bubble">Great question! Common use cases:<br><br>• Measuring DOM elements (e.g., getting an element's scroll height)<br>• Animations that need to start before paint<br>• Syncing scroll positions after DOM updates<br>• Portal positioning (tooltips, modals)<br><br>99% of the time you want <code>useEffect</code> though!<span class="time">12:35 PM</span></div>
+        </div>
+      </div>
+      <div class="chat-input-wrap">
+        <input type="text" placeholder="Ask anything...">
+        <button><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="section-title"><i class="fas fa-bullseye"></i> Case Study</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+    <div class="feature-card"><i class="fas fa-exclamation-triangle" style="color:#f59e0b"></i><h4>Problem</h4><p>Users needed a ChatGPT-like experience but with <strong>persistent chat history</strong>, <strong>multi-session management</strong>, and <strong>secure authentication</strong> — without paying for ChatGPT Plus. Existing open-source alternatives lacked polished UIs and proper session handling.</p></div>
+    <div class="feature-card"><i class="fas fa-lightbulb" style="color:#8b5cf6"></i><h4>Solution</h4><p>Built a full-stack AI chat app with React 18 frontend, Node.js/Express backend, MongoDB for persistence, and OpenAI GPT-4 integration. Implemented JWT auth, auto-generated chat titles via LLM, and a pixel-perfect dark mode UI inspired by ChatGPT.</p></div>
+    <div class="feature-card"><i class="fas fa-chart-line" style="color:#22c55e"></i><h4>Result</h4><p>Zero-cost alternative to ChatGPT Plus with 100% data ownership. Supports unlimited chat sessions with persistent history.</p></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title"><i class="fas fa-star"></i> Features</div>
+  <p class="section-sub">Everything you need for a modern AI chat experience</p>
+  <div class="features-grid">
+    <div class="feature-card"><i class="fas fa-lock"></i><h4>JWT Authentication</h4><p>Secure login and session management with JSON Web Tokens, protecting user data and conversations.</p></div>
+    <div class="feature-card"><i class="fas fa-brain"></i><h4>OpenAI GPT-4</h4><p>Intelligent responses powered by OpenAI's latest GPT-4 model with context-aware conversations.</p></div>
+    <div class="feature-card"><i class="fas fa-layer-group"></i><h4>Multi-session Chat</h4><p>Switch between multiple chat sessions seamlessly, each with its own conversation history.</p></div>
+    <div class="feature-card"><i class="fas fa-tag"></i><h4>Smart Chat Titles</h4><p>Chats are automatically titled using the first message content — keeping your workspace organized.</p></div>
+    <div class="feature-card"><i class="fas fa-trash-alt"></i><h4>Chat Deletion</h4><p>Easily remove unwanted conversations with a single click, keeping your workspace clean.</p></div>
+    <div class="feature-card"><i class="fas fa-moon"></i><h4>Dark Mode UI</h4><p>Beautiful dark-themed interface designed for extended use without eye strain.</p></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title"><i class="fas fa-code"></i> Tech Stack</div>
+  <p class="section-sub">Built with modern tools and frameworks</p>
+  <div class="tags">
+    <span class="tag">React 18</span>
+    <span class="tag ts">TypeScript</span>
+    <span class="tag node">Node.js</span>
+    <span class="tag exp">Express</span>
+    <span class="tag mongo">MongoDB</span>
+    <span class="tag openai">OpenAI SDK</span>
+    <span class="tag jwt">JWT</span>
+    <span class="tag tail">TailwindCSS</span>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title"><i class="fas fa-folder-tree"></i> Project Structure</div>
+  <p class="section-sub">Organized monorepo with clear separation of concerns</p>
+  <div class="tree">
+    <div class="dir depth-1"><i class="fas fa-folder"></i>backend/<span style="color:#64748b;margin-left:8px;font-weight:400">server</span></div>
+    <div class="file depth-2"><i class="far fa-file-code"></i>src/<span class="highlight">index.ts</span></div>
+    <div class="file depth-3"><i class="far fa-file-code"></i>controllers/<span class="highlight">auth.ts</span></div>
+    <div class="file depth-3"><i class="far fa-file-code"></i>controllers/<span class="highlight">chat.ts</span></div>
+    <div class="file depth-3"><i class="far fa-file-code"></i>middleware/<span class="highlight">auth.ts</span></div>
+    <div class="file depth-3"><i class="far fa-file-code"></i>models/<span class="highlight">User.ts</span></div>
+    <div class="file depth-3"><i class="far fa-file-code"></i>models/<span class="highlight">Chat.ts</span></div>
+    <div class="file depth-2"><i class="far fa-file-alt"></i>package.json</div>
+    <div class="file depth-2"><i class="far fa-file-alt"></i>tsconfig.json</div>
+    <div style="height:12px"></div>
+    <div class="dir depth-1"><i class="fas fa-folder"></i>frontend/<span style="color:#64748b;margin-left:8px;font-weight:400">client</span></div>
+    <div class="file depth-2"><i class="far fa-file-code"></i>src/components/<span class="highlight">Login.tsx</span></div>
+    <div class="file depth-2"><i class="far fa-file-code"></i>src/components/<span class="highlight">ChatView.tsx</span></div>
+    <div class="file depth-2"><i class="far fa-file-code"></i>src/api/<span class="highlight">client.ts</span></div>
+    <div class="file depth-2"><i class="far fa-file-alt"></i>package.json</div>
+    <div class="file depth-2"><i class="far fa-file-alt"></i>vite.config.ts</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title"><i class="fas fa-terminal"></i> Quick Start</div>
+  <p class="section-sub">Run the full application locally</p>
+  <div class="code-block">
+    <div class="comment"><i class="fas fa-info-circle" style="color:#8b5cf6"></i> Clone, install dependencies, and start both servers</div>
+    <pre><span class="cm"># Backend</span>
+<span class="kw">cd</span> backend
+<span class="kw">npm install</span>
+<span class="cm"># Set up .env with your OPENAI_API_KEY and JWT_SECRET</span>
+<span class="kw">npm run dev</span>
+
+<span class="cm"># Frontend (new terminal)</span>
+<span class="kw">cd</span> frontend
+<span class="kw">npm install</span>
+<span class="kw">npm run dev</span>
+
+<span class="cm"># Open http://localhost:3000</span></pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <a href="https://github.com/mostafaali/ai-chat-app"><i class="fab fa-github"></i> View on GitHub</a>
+  <span style="margin:0 12px;color:#475569">|</span>
+  <a href="mailto:mostafa@mostafaali.dev"><i class="fas fa-envelope"></i> Contact</a>
+</footer>
+
+</div>
+</body>
+</html>

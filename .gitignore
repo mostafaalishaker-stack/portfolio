@@ -1,0 +1,15 @@
+# Spec Kit
+.specify/
+.opencode/
+specs/
+AGENTS.md
+AUDIT_REPORT.md
+CHAT_HISTORY.md
+
+# Project source code (not portfolio files)
+ecommerce-platform/backend/
+saas-dashboard/frontend/node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
