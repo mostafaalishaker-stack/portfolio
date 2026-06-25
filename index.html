@@ -196,8 +196,8 @@
       .hero-img,.hero-img::after,.hero-badge{animation:none}
       .hero::before,.hero::after{display:none}
       .service-card,.project-card,.skill-cat,.stat-card,.timeline-content,.github-card,.btn,.footer-socials a,.theme-toggle,.hamburger,.mobile-bottom-nav a{box-shadow:none!important;transform:none!important}
-      .nav-links{position:fixed;top:70px;left:0;width:100%;background:var(--bg);flex-direction:column;padding:24px;gap:20px;transform:translateY(-120%);border-bottom:1px solid var(--border);z-index:999}
-      .nav-links.open{transform:translateY(0)}
+      .nav-links{position:fixed;top:70px;left:0;width:100%;background:var(--bg);flex-direction:column;padding:24px;gap:20px;transform:translateY(-120%);visibility:hidden;pointer-events:none;border-bottom:1px solid var(--border);z-index:999}
+      .nav-links.open{transform:translateY(0);visibility:visible;pointer-events:auto}
       .hamburger{display:flex}
       .hero-grid{grid-template-columns:1fr;text-align:center}
       .hero-img{width:250px;margin:0 auto}
