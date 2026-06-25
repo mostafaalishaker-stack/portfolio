@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <meta name="description" content="AI Study Buddy — Paste any text and get instant explanations, quizzes, and flashcards powered by OpenAI GPT-4o. Built with React, Node.js, MongoDB.">
+  <meta property="og:title" content="AI Study Buddy - Mostafa Ali Portfolio">
+  <meta property="og:description" content="AI-powered study tool that helps you understand complex topics, generate quizzes, and create flashcards instantly.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mostafaali.dev/ai-study-buddy/">
+  <meta property="og:image" content="https://mostafaali.dev/profile.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AI Study Buddy - Mostafa Ali Portfolio">
+  <meta name="twitter:description" content="AI-powered study tool for instant explanations, quizzes, and flashcards.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+<title>AI Study Buddy – Project Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" media="print" onload="this.media='all'">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',-apple-system,sans-serif;background:#0b1120;color:#e2e8f0;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  .container{max-width:1100px;margin:0 auto;padding:0 24px}
+  .back-link{display:inline-flex;align-items:center;gap:8px;color:#64748b;font-size:14px;font-weight:500;padding:16px 0;transition:color .2s}
+  .back-link:hover{color:#06b6d4}
+  .back-link i{font-size:12px}
+  .hero{text-align:center;padding:60px 0 40px}
+  .hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);color:#818cf8;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;margin-bottom:16px}
+  .hero-title{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.03em;background:linear-gradient(135deg,#f1f5f9,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:16px}
+  .hero-desc{font-size:clamp(1rem,2vw,1.15rem);color:#94a3b8;max-width:650px;margin:0 auto 8px}
+  .mockup{background:#131c31;border:1px solid #1e293b;border-radius:16px;overflow:hidden;margin:40px 0;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+  .mockup-navbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#0b1120;border-bottom:1px solid #1e293b}
+  .mockup-logo,.mockup-nav-right{display:flex;align-items:center;gap:12px}
+  .mockup-logo{font-weight:700;font-size:15px;gap:8px}
+  .mockup-nav-links{display:flex;gap:8px;font-size:13px;color:#64748b}
+  .mockup-nav-link{padding:4px 10px;border-radius:6px;transition:color .2s}
+  .mockup-nav-link.active{color:#e2e8f0;background:#1e293b}
+  .mockup-nav-link:hover{color:#e2e8f0}
+  .mockup-user{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
+  .mockup-body{padding:24px}
+  .mockup-input-area{background:#0b1120;border:1px solid #1e293b;border-radius:12px;padding:16px;margin-bottom:16px}
+  .mockup-input-area p{color:#475569;font-size:14px;line-height:1.7}
+  .mockup-levels{display:flex;gap:8px;margin-bottom:16px}
+  .mockup-level{font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid #1e293b;color:#64748b;cursor:default}
+  .mockup-level.active{background:rgba(99,102,241,.2);border-color:#6366f1;color:#818cf8}
+  .mockup-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;padding:12px 28px;border-radius:10px;font-weight:600;font-size:14px;border:none;cursor:default;margin-bottom:24px}
+  .mockup-result{background:#0b1120;border:1px solid #1e293b;border-radius:12px;padding:20px}
+  .mockup-result h4{color:#94a3b8;font-size:12px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+  .mockup-result p{color:#e2e8f0;font-size:14px;line-height:1.8}
+  .mockup-highlight{display:inline-block;background:rgba(6,182,212,.1);color:#22d3ee;padding:1px 6px;border-radius:4px;font-size:13px}
+  .section-title{font-size:clamp(1.2rem,3vw,1.5rem);font-weight:700;color:#f1f5f9;margin:48px 0 24px;display:flex;align-items:center;gap:10px}
+  .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:48px}
+  .feature-card{background:#131c31;border:1px solid #1e293b;border-radius:12px;padding:20px;transition:border-color .3s}
+  .feature-card:hover{border-color:#6366f1}
+  .feature-icon{font-size:28px;margin-bottom:10px}
+  .feature-card h3{font-size:16px;font-weight:600;margin-bottom:6px}
+  .feature-card p{font-size:13px;color:#94a3b8;line-height:1.6}
+  .tech-tags{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 24px}
+  .tech-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:8px;font-size:13px;font-weight:500}
+  .tech-tag.react{background:rgba(97,219,251,.1);color:#61dafb;border:1px solid rgba(97,219,251,.2)}
+  .tech-tag.ts{background:rgba(49,120,198,.1);color:#3178c6;border:1px solid rgba(49,120,198,.2)}
+  .tech-tag.node{background:rgba(104,159,56,.1);color:#689f38;border:1px solid rgba(104,159,56,.2)}
+  .tech-tag.mongo{background:rgba(71,164,71,.1);color:#47a447;border:1px solid rgba(71,164,71,.2)}
+  .tech-tag.ai{background:rgba(99,102,241,.1);color:#818cf8;border:1px solid rgba(99,102,241,.2)}
+  .tech-tag.jwt{background:rgba(244,63,94,.1);color:#f43f5e;border:1px solid rgba(244,63,94,.2)}
+  .api-table{width:100%;border-collapse:collapse;margin:16px 0 40px;font-size:14px}
+  .api-table th{text-align:left;padding:10px 14px;background:#131c31;color:#94a3b8;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #1e293b}
+  .api-table td{padding:10px 14px;border-bottom:1px solid #1e293b;color:#e2e8f0}
+  .api-table td:first-child{color:#22d3ee;font-family:monospace;font-size:13px}
+  .api-table tr:hover td{background:#131c31}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:10px;font-weight:600;font-size:14px;transition:all .3s}
+  .btn-primary{background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(99,102,241,.3)}
+  .btn-outline{border:1px solid #1e293b;color:#94a3b8}
+  .btn-outline:hover{border-color:#6366f1;color:#fff}
+  .actions{display:flex;gap:12px;justify-content:center;margin:32px 0 48px;flex-wrap:wrap}
+  .value-prop{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:24px 0 48px}
+  .value-item{text-align:center;padding:20px}
+  .value-item .num{font-size:32px;font-weight:800;background:linear-gradient(135deg,#6366f1,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .value-item .label{font-size:13px;color:#64748b;margin-top:4px}
+  @media(max-width:640px){.mockup-levels{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+  <div class="container">
+    <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Portfolio</a>
+
+    <section class="hero">
+      <div class="hero-badge"><i class="fas fa-brain"></i> AI-Powered Study Tool</div>
+      <h1 class="hero-title">AI Study Buddy</h1>
+      <p class="hero-desc">Paste any lecture notes, textbook content, or research paper — get instant AI-powered explanations, practice quizzes, and study flashcards.</p>
+    </section>
+
+    <div class="mockup">
+      <div class="mockup-navbar">
+        <div class="mockup-logo"><span>🧠</span> Study Buddy</div>
+        <div class="mockup-nav-links">
+          <span class="mockup-nav-link active">Dashboard</span>
+          <span class="mockup-nav-link">New Study</span>
+          <span class="mockup-nav-link">History</span>
+        </div>
+        <div class="mockup-nav-right">
+          <div class="mockup-user">MA</div>
+        </div>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-levels">
+          <span class="mockup-level">Beginner</span>
+          <span class="mockup-level active">Intermediate</span>
+          <span class="mockup-level">Expert</span>
+        </div>
+        <div class="mockup-input-area">
+          <p>Photosynthesis is the process used by plants, algae, and certain bacteria to convert light energy into chemical energy. The process occurs in the chloroplasts, where chlorophyll absorbs sunlight and uses it to transform carbon dioxide and water into glucose and oxygen. The light-dependent reactions require direct sunlight to produce ATP and NADPH, while the Calvin cycle (light-independent) uses these molecules to synthesize glucose from carbon dioxide.</p>
+        </div>
+        <div style="text-align:center"><div class="mockup-btn"><i class="fas fa-magic"></i> Study Now</div></div>
+        <div class="mockup-result">
+          <h4><i class="fas fa-lightbulb" style="color:#f59e0b;margin-right:6px"></i> AI Explanation</h4>
+          <p>Think of a plant like a solar-powered <span class="mockup-highlight">factory</span>. The <strong>chloroplasts</strong> are the solar panels on the roof. When sunlight hits these panels (powered by <strong>chlorophyll</strong>), the factory goes into action. It takes in <strong>carbon dioxide</strong> (CO₂) from the air and <strong>water</strong> (H₂O) from the ground, and transforms them into <strong>glucose</strong> (sugar = food for the plant) and <strong>oxygen</strong> (which it releases as a byproduct).</p>
+          <br>
+          <p>The process has two main stages:</p>
+          <p>1️⃣ <strong>Light-dependent reactions</strong> — These are like the factory's morning shift. They can only run when the sun is out. They capture sunlight and create energy-carrying molecules called <strong>ATP</strong> and <strong>NADPH</strong>.</p>
+          <p>2️⃣ <strong>Calvin cycle</strong> — This is the night shift. It doesn't need direct sunlight. It takes the ATP and NADPH made earlier and uses them to build <strong>glucose</strong> from carbon dioxide. Think of this as the assembly line that packages the final product.</p>
+        </div>
+      </div>
+    </div>
+
+    <section>
+      <h2 class="section-title"><i class="fas fa-star" style="color:#f59e0b"></i> Key Features</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📖</div>
+          <h3>Smart Explanations</h3>
+          <p>AI breaks down complex topics with simple language, relatable analogies, and structured learning.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📝</div>
+          <h3>Quiz Generator</h3>
+          <p>Auto-generates multiple-choice questions to test your understanding with instant feedback.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔖</div>
+          <h3>Study Flashcards</h3>
+          <p>Creates front/back flashcards for active recall practice — click to reveal answers.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎚️</div>
+          <h3>Difficulty Levels</h3>
+          <p>Choose Beginner, Intermediate, or Expert and the AI adapts its explanations to your level.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="tech-tags">
+      <span class="tech-tag react"><i class="fab fa-react"></i> React</span>
+      <span class="tech-tag ts"><i class="fab fa-js"></i> TypeScript</span>
+      <span class="tech-tag node"><i class="fab fa-node-js"></i> Node.js</span>
+      <span class="tech-tag mongo"><i class="fas fa-database"></i> MongoDB</span>
+      <span class="tech-tag ai"><i class="fas fa-robot"></i> OpenAI GPT-4o</span>
+      <span class="tech-tag jwt"><i class="fas fa-key"></i> JWT</span>
+    </div>
+
+    <h2 class="section-title"><i class="fas fa-code" style="color:#22d3ee"></i> API Routes</h2>
+    <div style="overflow-x:auto">
+      <table class="api-table">
+        <thead><tr><th>Method</th><th>Route</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>POST</td><td>/api/auth/register</td><td>Create a new account</td></tr>
+          <tr><td>POST</td><td>/api/auth/login</td><td>Sign in</td></tr>
+          <tr><td>POST</td><td>/api/study/process</td><td>Process study content (explain/quiz/flashcards)</td></tr>
+          <tr><td>GET</td><td>/api/study/sessions</td><td>List study history</td></tr>
+          <tr><td>GET</td><td>/api/study/sessions/:id</td><td>Get session details</td></tr>
+          <tr><td>DELETE</td><td>/api/study/sessions/:id</td><td>Delete a session</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="actions">
+      <a href="https://github.com/mostafaalishaker-stack/ai-study-buddy" target="_blank" rel="noopener" class="btn btn-outline"><i class="fab fa-github"></i> View Source</a>
+    </div>
+  </div>
+</body>
+</html>
