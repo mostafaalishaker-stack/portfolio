@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mostafa Ali Shaker - Full-Stack Developer CV</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, Helvetica, sans-serif; background: #e8ecf2; color: #1e293b; padding: 40px; line-height: 1.5; }
+  .page { max-width: 850px; margin: 0 auto; background: #fff; padding: 45px 50px; box-shadow: 0 8px 30px rgba(0,0,0,.12); }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 3px solid #2563eb; }
+  .header-left { display: flex; align-items: center; gap: 18px; }
+  .header-left .avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #2563eb; flex-shrink: 0; }
+  .header-left h1 { font-size: 30px; color: #0f172a; letter-spacing: -.5px; }
+  .header-left .title { font-size: 15px; color: #2563eb; font-weight: 600; margin-top: 2px; }
+  .header-right { text-align: right; font-size: 13px; color: #475569; line-height: 1.8; }
+  .header-right a { color: #2563eb; text-decoration: none; }
+  .header-right a:hover { text-decoration: underline; }
+  h2 { font-size: 16px; color: #0f172a; text-transform: uppercase; letter-spacing: 1px; margin: 22px 0 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; }
+  .summary { background: #f8fafc; padding: 16px 20px; border-left: 4px solid #2563eb; margin: 16px 0; font-size: 14px; line-height: 1.7; color: #334155; }
+  .skills-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .skills-grid span { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+  .education { margin: 10px 0; }
+  .education .school { font-weight: 600; font-size: 15px; color: #0f172a; }
+  .education .degree { font-size: 14px; color: #475569; }
+  .education .date { font-size: 13px; color: #64748b; }
+  .project { margin: 14px 0; padding: 14px 16px; background: #f8fafc; border-radius: 6px; border: 1px solid #f1f5f9; }
+  .project h3 { font-size: 14px; color: #0f172a; display: inline; }
+  .project .tech { color: #2563eb; font-size: 12px; font-weight: 500; margin: 3px 0 6px; }
+  .project ul { padding-left: 16px; margin: 4px 0; }
+  .project ul li { font-size: 13px; line-height: 1.6; color: #475569; margin-bottom: 2px; }
+  .project .links { font-size: 12px; margin-top: 4px; }
+  .project .links a { color: #2563eb; text-decoration: none; }
+  .project .links a:hover { text-decoration: underline; }
+  .two-col { display: flex; gap: 30px; }
+  .two-col > div { flex: 1; }
+  ul.simple { padding-left: 18px; margin: 6px 0; }
+  ul.simple li { font-size: 13px; line-height: 1.7; color: #475569; }
+  @media print {
+    body { padding: 0; background: #fff; }
+    .page { box-shadow: none; padding: 35px 40px; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 12px; }
+    .page { padding: 20px; }
+    .header { flex-direction: column; }
+    .header-right { text-align: left; }
+    .two-col { flex-direction: column; gap: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-left">
+      <img src="profile.jpg" alt="Mostafa Ali Shaker" class="avatar">
+      <div>
+        <h1>Mostafa Ali Shaker</h1>
+        <div class="title">Full-Stack Developer</div>
+      </div>
+    </div>
+    <div class="header-right">
+      mostafaalishaker@gmail.com<br>
+      Egypt<br>
+      <a href="https://mostafaalishaker-stack.github.io/portfolio/">portfolio</a> &bull;
+      <a href="https://github.com/mostafaalishaker-stack">github</a> &bull;
+      <a href="https://linkedin.com/in/mostafa-shaker-559279279">linkedin</a>
+    </div>
+  </div>
+
+  <div class="summary">
+    Mechatronics Engineering student at Sphinx University with 5 years of hands-on full-stack development experience. Built and deployed 9 production-grade projects spanning AI (GPT-4o), real-time systems (Socket.io), e-commerce (Angular 18), and SaaS platforms. Proficient across React, Angular, Node.js, TypeScript, and MongoDB with strong foundations in authentication, API design, and CI/CD.
+  </div>
+
+  <h2>Technical Skills</h2>
+  <div class="skills-grid">
+    <span>React</span><span>Angular</span><span>TypeScript</span><span>JavaScript</span>
+    <span>Node.js</span><span>Express</span><span>MongoDB</span><span>TailwindCSS</span>
+    <span>REST APIs</span><span>Socket.io</span><span>JWT/OAuth</span><span>Stripe</span>
+    <span>OpenAI API</span><span>Prisma</span><span>Git/GitHub Actions</span><span>Vite</span>
+    <span>ASP.NET Core</span><span>SQL Server</span><span>HTML/CSS</span><span>CI/CD</span>
+  </div>
+
+  <h2>Projects</h2>
+
+  <div class="project">
+    <h3>AI Study Buddy</h3>
+    <span style="font-size:12px;color:#64748b;margin-left:8px;">github.com/mostafaalishaker-stack/ai-study-buddy</span>
+    <div class="tech">React &bull; Node.js &bull; OpenAI GPT-4o &bull; TailwindCSS</div>
+    <ul>
+      <li>Built an AI-powered study platform with 3 core features: intelligent explanations, auto-generated quizzes, and interactive flashcards using GPT-4o</li>
+      <li>Designed RESTful API with rate limiting (100 req/min), JWT authentication, and input validation for production readiness</li>
+      <li>Implemented skeleton loading, pagination (10 items/page), and responsive design for optimal UX across devices</li>
+    </ul>
+  </div>
+
+  <div class="project">
+    <h3>AI Chat App</h3>
+    <span style="font-size:12px;color:#64748b;margin-left:8px;">github.com/mostafaalishaker-stack/ai-chat-app</span>
+    <div class="tech">React &bull; Node.js &bull; OpenAI &bull; MongoDB &bull; JWT</div>
+    <ul>
+      <li>Developed a multi-session GPT-4 chat app with streaming responses, conversation history, and markdown rendering</li>
+      <li>Integrated OpenAI API with token management, reducing API costs by optimizing prompt context windows</li>
+      <li>Added health check endpoint, Helmet security headers, and comprehensive error handling middleware</li>
+    </ul>
+  </div>
+
+  <div class="project">
+    <h3>AI Resume Analyzer</h3>
+    <span style="font-size:12px;color:#64748b;margin-left:8px;">github.com/mostafaalishaker-stack/ai-resume-analyzer</span>
+    <div class="tech">React &bull; Node.js &bull; GPT-4o-mini &bull; Express</div>
+    <ul>
+      <li>Built an AI resume analysis tool that scores resumes, extracts skills, and generates improvement suggestions</li>
+      <li>Implemented PDF upload with multer, file validation (max 5MB, PDF only), and structured AI feedback formatting</li>
+      <li>Designed responsive UI with empty states, skeleton loading, and toast notifications for a polished user experience</li>
+    </ul>
+  </div>
+
+  <div class="project">
+    <h3>E-Commerce Platform</h3>
+    <span style="font-size:12px;color:#64748b;margin-left:8px;">github.com/mostafaalishaker-stack/ecommerce-platform</span>
+    <div class="tech">Angular 18 &bull; Node.js &bull; MongoDB &bull; TailwindCSS</div>
+    <ul>
+      <li>Built a full online store with product catalog, shopping cart, checkout flow, order management, and admin dashboard</li>
+      <li>Implemented JWT authentication with role-based access (admin/user), input sanitization, and rate limiting on all API routes</li>
+      <li>Added search with debounce, category filtering, pagination (12 products/page), and responsive grid layout</li>
+    </ul>
+  </div>
+
+  <div class="project">
+    <h3>Social Platform</h3>
+    <span style="font-size:12px;color:#64748b;margin-left:8px;">github.com/mostafaalishaker-stack/social-platform</span>
+    <div class="tech">React &bull; Node.js &bull; Socket.io &bull; MongoDB &bull; JWT</div>
+    <ul>
+      <li>Built real-time social platform with live feed, instant messaging via Socket.io, friend system, and push notifications</li>
+      <li>Optimized WebSocket connections with event debouncing, reducing server load by managing connection pools efficiently</li>
+      <li>Implemented file upload with image validation, toast notifications for real-time events, and skeleton loading states</li>
+    </ul>
+  </div>
+
+  <div class="project">
+    <h3>Kanban Task Manager</h3>
+    <span style="font-size:12px;color:#64748b;margin-left:8px;">github.com/mostafaalishaker-stack/kanban-task-manager</span>
+    <div class="tech">React &bull; Node.js &bull; Prisma &bull; MongoDB &bull; JWT &bull; TailwindCSS</div>
+    <ul>
+      <li>Developed a drag-and-drop kanban board with task management, team collaboration, and real-time updates</li>
+      <li>Designed database schema with Prisma ORM, implementing cascading deletes and optimized queries for sub-200ms responses</li>
+      <li>Added role-based access control, activity logging, search/filter by status/priority, and paginated task views</li>
+    </ul>
+  </div>
+
+  <div class="project">
+    <h3>SaaS Dashboard</h3>
+    <span style="font-size:12px;color:#64748b;margin-left:8px;">github.com/mostafaalishaker-stack/saas-dashboard</span>
+    <div class="tech">React &bull; Node.js &bull; Stripe &bull; Express &bull; JWT</div>
+    <ul>
+      <li>Built multi-tenant SaaS platform with Stripe subscription billing (monthly/annual), webhook handling, and invoice management</li>
+      <li>Implemented analytics dashboard with interactive charts, user management with role-based permissions, and admin panel</li>
+      <li>Added rate limiting (200 req/15min), Helmet security headers, CORS configuration, and input validation across all endpoints</li>
+    </ul>
+  </div>
+
+  <div class="project">
+    <h3>Job Board Platform</h3>
+    <span style="font-size:12px;color:#64748b;margin-left:8px;">github.com/mostafaalishaker-stack/job-board</span>
+    <div class="tech">React &bull; Node.js &bull; Express &bull; MongoDB &bull; JWT</div>
+    <ul>
+      <li>Created a job listing platform with search, category/type/location filtering, paginated results, and employer/job-seeker workflows</li>
+      <li>Implemented application tracking system with resume upload, status updates, and email notifications on application changes</li>
+      <li>Added data validation, rate limiting, security headers, and health monitoring endpoint for production reliability</li>
+    </ul>
+  </div>
+
+  <div class="project">
+    <h3>Finance Tracker</h3>
+    <span style="font-size:12px;color:#64748b;margin-left:8px;">github.com/mostafaalishaker-stack/finance-tracker</span>
+    <div class="tech">React &bull; Node.js &bull; Express &bull; MongoDB &bull; JWT</div>
+    <ul>
+      <li>Built personal finance manager with income/expense tracking, budget management, interactive charts (Chart.js), and CSV export</li>
+      <li>Added recurring transaction detection, category management, and monthly spending summaries with visual breakdowns</li>
+      <li>Wrote unit tests using Vitest + Testing Library (Skeleton, EmptyState components), achieving reliable component coverage</li>
+    </ul>
+  </div>
+
+  <h2>Education</h2>
+  <div class="education">
+    <div class="school">Sphinx University</div>
+    <div class="degree">B.Sc. in Mechatronics Engineering &mdash; Faculty of Engineering</div>
+    <div class="date">2024 &ndash; Present</div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h2>Certifications</h2>
+      <ul class="simple">
+        <li>The Complete Web Development Bootcamp &mdash; Udemy</li>
+        <li>React - The Complete Guide &mdash; Udemy</li>
+        <li>Node.js, Express, MongoDB &amp; More &mdash; Udemy</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Languages</h2>
+      <ul class="simple">
+        <li><strong>Arabic</strong> &mdash; Native</li>
+        <li><strong>English</strong> &mdash; Fluent (Technical &amp; Professional)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</body>
+</html>
