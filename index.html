@@ -141,16 +141,6 @@
     .timeline-content h3{font-size:1.1rem}
     .timeline-content .company{color:var(--text-sec);font-size:.9rem;margin-bottom:10px}
     .timeline-content p{color:var(--text-sec);font-size:.9rem}
-    /* Testimonials */
-    .testimonials-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px;margin-top:50px}
-    .testimonial-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transition:var(--transition);position:relative}
-    .testimonial-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
-    .testimonial-card .quote{font-size:2.5rem;color:var(--primary);opacity:.15;position:absolute;top:12px;right:20px;font-family:serif;line-height:1}
-    .testimonial-card p{color:var(--text-sec);font-size:.95rem;margin-bottom:20px;line-height:1.7}
-    .testimonial-author{display:flex;align-items:center;gap:14px}
-    .testimonial-author .avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.1rem}
-    .testimonial-author h4{font-size:.95rem}
-    .testimonial-author span{color:var(--text-sec);font-size:.8rem}
     /* GitHub */
     .github-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:50px}
     .github-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transition:var(--transition)}
@@ -214,7 +204,6 @@
       .skills-grid{grid-template-columns:1fr}
       .services-grid{grid-template-columns:1fr}
       .github-grid{grid-template-columns:1fr}
-      .testimonials-grid{grid-template-columns:1fr}
       .mobile-bottom-nav{display:flex}
       body{padding-bottom:65px}
       #scrollTop{bottom:80px;right:16px;width:40px;height:40px;font-size:1rem}
@@ -250,7 +239,6 @@
         <li><a href="#skills">Skills</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#experience">Experience</a></li>
-        <li><a href="#testimonials">Testimonials</a></li>
         <li><a href="#github">GitHub</a></li>
         <li><a href="#blog">Blog</a></li>
         <li><a href="#contact">Contact</a></li>
@@ -597,42 +585,6 @@
             <h3>Started Coding</h3>
             <div class="company">Self-Learning</div>
             <p>Began my programming journey with web development. Learned JavaScript, TypeScript, and modern frameworks through hands-on projects.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="testimonials" style="background:var(--bg-card)">
-    <div class="container">
-      <div style="text-align:center">
-        <span class="section-label">Testimonials</span>
-        <h2 class="section-title">What People Say</h2>
-        <p class="section-desc" style="margin:0 auto">Kind words from people I've worked with.</p>
-      </div>
-      <div class="testimonials-grid reveal">
-        <div class="testimonial-card">
-          <div class="quote">"</div>
-          <p>"Mostafa is a talented developer with great attention to detail. His projects show dedication and a strong understanding of full-stack development."</p>
-          <div class="testimonial-author">
-            <div class="avatar">M</div>
-            <div><h4>Mentor</h4><span>Sphinx University</span></div>
-          </div>
-        </div>
-        <div class="testimonial-card">
-          <div class="quote">"</div>
-          <p>"I've seen Mostafa's growth as a developer — he consistently delivers well-structured code and picks up new technologies quickly."</p>
-          <div class="testimonial-author">
-            <div class="avatar">C</div>
-            <div><h4>Colleague</h4><span>Open Source Community</span></div>
-          </div>
-        </div>
-        <div class="testimonial-card">
-          <div class="quote">"</div>
-          <p>"Mostafa has built an impressive portfolio of real-world projects. He has the drive and skills to succeed in software engineering."</p>
-          <div class="testimonial-author">
-            <div class="avatar">P</div>
-            <div><h4>Peer</h4><span>Fellow Developer</span></div>
           </div>
         </div>
       </div>
