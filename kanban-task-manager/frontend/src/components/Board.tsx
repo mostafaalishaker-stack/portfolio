@@ -6,6 +6,8 @@ import { Column } from "./Column";
 import { Card } from "./Card";
 import { useAuth } from "../hooks/useAuth";
 import toast from "react-hot-toast";
+import { SkeletonCard, SkeletonList } from "./Skeleton";
+import { EmptyState } from "./EmptyState";
 
 export function Board() {
   const [board, setBoard] = useState<BoardType | null>(null);
@@ -137,7 +139,22 @@ export function Board() {
   }
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-gray-100"><p className="text-gray-500">Loading boards...</p></div>;
+    return (
+      <div className="min-h-screen bg-gray-100 p-6">
+        <div className="flex gap-6 overflow-x-auto pb-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="bg-gray-200 rounded-xl p-4 min-w-[300px] w-[300px] flex-shrink-0">
+              <div className="skeleton skeleton-text" style={{ width: '40%', height: 20, marginBottom: 16 }} />
+              <div className="space-y-3">
+                <SkeletonCard />
+                <SkeletonCard />
+                <SkeletonCard />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -199,7 +216,7 @@ export function Board() {
             </DragOverlay>
           </DndContext>
         ) : (
-          <p className="text-gray-500 text-center py-12">No boards yet. Create one to get started.</p>
+          <EmptyState icon="📋" title="No boards yet" message="Create your first board to get started" action={{ label: "New Board", onClick: openBoardModal }} />
         )}
       </div>
 

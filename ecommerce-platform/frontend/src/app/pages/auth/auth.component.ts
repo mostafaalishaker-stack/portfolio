@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-auth',
@@ -36,6 +37,7 @@ import { ApiService } from '../../services/api.service';
 export class AuthComponent {
   private api = inject(ApiService);
   private router = inject(Router);
+  private toastSvc = inject(ToastService);
   isLogin = signal(true);
   email = '';
   password = '';
@@ -45,8 +47,15 @@ export class AuthComponent {
   submit() {
     const action = this.isLogin() ? this.api.login(this.email, this.password) : this.api.register(this.email, this.password);
     action.subscribe({
-      next: (res: { token: string }) => { localStorage.setItem('token', res.token); this.router.navigate(['/']); },
-      error: (err: { error?: { message?: string } }) => alert(err.error?.message || 'Something went wrong'),
+      next: (res: { token: string }) => {
+        localStorage.setItem('token', res.token);
+        this.toastSvc.show(this.isLogin() ? 'Logged in successfully!' : 'Account created!', 'success');
+        this.router.navigate(['/']);
+      },
+      error: (err: { error?: { message?: string } }) => {
+        const msg = err.error?.message || 'Something went wrong';
+        this.toastSvc.show(msg, 'error');
+      },
     });
   }
 }

@@ -1,19 +1,27 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ApiService } from '../../services/api.service';
+import { ToastService } from '../../services/toast.service';
 import { Order } from '../../models/order.model';
+import { SkeletonComponent } from '../../components/skeleton.component';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SkeletonComponent],
   template: `
     <div class="max-w-6xl mx-auto px-4 py-10">
       <h1 class="text-3xl font-bold mb-8">Admin Dashboard</h1>
 
       <div class="bg-white rounded-xl border p-6 mb-8">
         <h2 class="text-xl font-semibold mb-4">All Orders</h2>
-        @if (orders.length === 0) {
+        @if (loading()) {
+          <div class="space-y-4">
+            <app-skeleton height="40px" />
+            <app-skeleton height="40px" />
+            <app-skeleton height="40px" />
+          </div>
+        } @else if (orders.length === 0) {
           <p class="text-gray-400">No orders yet</p>
         } @else {
           <div class="overflow-x-auto">
@@ -49,9 +57,14 @@ import { Order } from '../../models/order.model';
 })
 export class AdminComponent implements OnInit {
   private api = inject(ApiService);
+  private toastSvc = inject(ToastService);
   orders: Order[] = [];
+  loading = signal(true);
 
   ngOnInit() {
-    this.api.getOrders().subscribe(o => this.orders = o);
+    this.api.getOrders().subscribe({
+      next: o => { this.orders = o; this.loading.set(false); },
+      error: () => { this.loading.set(false); this.toastSvc.show('Failed to load orders', 'error'); },
+    });
   }
 }

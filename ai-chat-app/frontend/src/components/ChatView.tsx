@@ -2,6 +2,8 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import api from "../api/client";
 import { Chat, Message } from "../types";
+import { SkeletonList } from "./Skeleton";
+import { EmptyState } from "./EmptyState";
 
 interface Props {
   onLogout: () => void;
@@ -12,6 +14,7 @@ export function ChatView({ onLogout }: Props) {
   const [activeChat, setActiveChat] = useState<Chat | null>(null);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
   const msgEnd = useRef<HTMLDivElement>(null);
   const chatListRef = useRef<HTMLDivElement>(null);
@@ -23,6 +26,8 @@ export function ChatView({ onLogout }: Props) {
     }).catch(() => {
       setFetchError(true);
       toast.error("Failed to load chats");
+    }).finally(() => {
+      setInitialLoading(false);
     });
   }, []);
 
@@ -100,25 +105,33 @@ export function ChatView({ onLogout }: Props) {
           </button>
         </div>
         <div className="flex-1 overflow-y-auto p-2 space-y-1" ref={chatListRef} role="listbox" aria-label="Chat history">
-          {chats.map((chat) => (
-            <div
-              key={chat._id}
-              onClick={() => selectChat(chat)}
-              onKeyDown={(e) => handleChatKeyDown(e, chat)}
-              role="option"
-              tabIndex={0}
-              aria-selected={activeChat?._id === chat._id}
-              className={`p-3 rounded-lg cursor-pointer flex items-center justify-between group text-sm transition
-                ${activeChat?._id === chat._id ? "bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300" : "hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300"}`}
-            >
-              <span className="truncate flex-1"><i className="fas fa-message mr-2 text-xs"></i>{chat.title}</span>
-              <button onClick={(e) => { e.stopPropagation(); deleteChat(chat._id); }}
-                aria-label={`Delete ${chat.title}`}
-                className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
-                <i className="fas fa-trash text-xs"></i>
-              </button>
+          {initialLoading ? (
+            <div className="p-4 space-y-3">
+              <SkeletonList count={5} />
             </div>
-          ))}
+          ) : chats.length === 0 ? (
+            <EmptyState icon="💬" title="No chats yet" message="Start a new conversation" action={{ label: "New Chat", onClick: newChat }} />
+          ) : (
+            chats.map((chat) => (
+              <div
+                key={chat._id}
+                onClick={() => selectChat(chat)}
+                onKeyDown={(e) => handleChatKeyDown(e, chat)}
+                role="option"
+                tabIndex={0}
+                aria-selected={activeChat?._id === chat._id}
+                className={`p-3 rounded-lg cursor-pointer flex items-center justify-between group text-sm transition
+                  ${activeChat?._id === chat._id ? "bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300" : "hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300"}`}
+              >
+                <span className="truncate flex-1"><i className="fas fa-message mr-2 text-xs"></i>{chat.title}</span>
+                <button onClick={(e) => { e.stopPropagation(); deleteChat(chat._id); }}
+                  aria-label={`Delete ${chat.title}`}
+                  className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
+                  <i className="fas fa-trash text-xs"></i>
+                </button>
+              </div>
+            ))
+          )}
         </div>
         <div className="p-4 border-t dark:border-gray-700">
           <button onClick={onLogout} aria-label="Logout"

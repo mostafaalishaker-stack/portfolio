@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { SkeletonCard } from '../components/Skeleton';
+import { EmptyState } from '../components/EmptyState';
+import { showToast } from '../utils/toast';
 
 interface Props { token: string; onLogout: () => void }
 
@@ -69,6 +72,17 @@ export default function Dashboard({ token, onLogout }: Props) {
       </header>
 
       <main style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 24px' }}>
+        {activeTab === 'overview' && !stats && (
+          <div>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: 24 }}>Dashboard Overview</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(250px,1fr))', gap: 20, marginBottom: 32 }}>
+              {[1,2,3,4].map(i => <SkeletonCard key={i} />)}
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24 }}>
+              <SkeletonCard /><SkeletonCard />
+            </div>
+          </div>
+        )}
         {activeTab === 'overview' && stats && (
           <div>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: 24 }}>Dashboard Overview</h2>
@@ -104,7 +118,9 @@ export default function Dashboard({ token, onLogout }: Props) {
             </div>
             <div style={{ background: '#131c31', border: '1px solid #1e293b', borderRadius: 16, padding: 24, marginTop: 24 }}>
               <h3 style={{ fontSize: '1.05rem', marginBottom: 16 }}>Recent Activity</h3>
-              {stats.recentActivity.map((a: { action: string; time: string; type: string }, i: number) => (
+              {stats.recentActivity.length === 0 ? (
+                <EmptyState icon="📋" title="No recent activity" message="User actions will appear here." />
+              ) : stats.recentActivity.map((a: { action: string; time: string; type: string }, i: number) => (
                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: i < stats.recentActivity.length - 1 ? '1px solid #1e293b' : 'none' }}>
                   <span style={{ fontSize: '.9rem', display: 'flex', alignItems: 'center', gap: 8 }}>
                     <i className={`fas fa-${a.type === 'user' ? 'user-plus' : a.type === 'billing' ? 'credit-card' : a.type === 'project' ? 'folder' : a.type === 'payment' ? 'dollar' : a.type === 'team' ? 'user-friends' : 'key'}`} style={{ color: '#6366f1', width: 16 }}></i>
@@ -117,7 +133,16 @@ export default function Dashboard({ token, onLogout }: Props) {
           </div>
         )}
 
-        {activeTab === 'billing' && (
+        {activeTab === 'billing' && plans.length === 0 && !sub && (
+          <div>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: 24 }}>Billing & Plans</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))', gap: 24 }}>
+              {[1,2,3].map(i => <SkeletonCard key={i} />)}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'billing' && (plans.length > 0 || sub) && (
           <div>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: 8 }}>Billing & Plans</h2>
             <p style={{ color: '#94a3b8', marginBottom: 32, fontSize: '.95rem' }}>Current plan: <strong style={{ color: '#6366f1' }}>{sub?.plan || 'Free'}</strong> {sub?.status === 'active' ? '(Active)' : ''}</p>
@@ -134,7 +159,7 @@ export default function Dashboard({ token, onLogout }: Props) {
                       </li>
                     ))}
                   </ul>
-                  <button disabled={sub?.plan === plan.id} onClick={async () => { await api('/billing/subscribe', { method: 'POST', body: JSON.stringify({ planId: plan.id }) }); const updated = await api<SubData>('/billing/subscription'); setSub(updated); }} style={{ width: '100%', padding: 12, borderRadius: 10, background: sub?.plan === plan.id ? '#1e293b' : '#6366f1', color: sub?.plan === plan.id ? '#64748b' : '#fff', fontWeight: 600, cursor: sub?.plan === plan.id ? 'default' : 'pointer', border: 'none', transition: '.3s' }}>{sub?.plan === plan.id ? 'Current Plan' : plan.price === 0 ? 'Downgrade' : 'Subscribe'}</button>
+                  <button disabled={sub?.plan === plan.id} onClick={async () => { try { await api('/billing/subscribe', { method: 'POST', body: JSON.stringify({ planId: plan.id }) }); const updated = await api<SubData>('/billing/subscription'); setSub(updated); showToast(`Subscribed to ${plan.name} successfully!`, 'success'); } catch { showToast('Subscription failed', 'error'); } }} style={{ width: '100%', padding: 12, borderRadius: 10, background: sub?.plan === plan.id ? '#1e293b' : '#6366f1', color: sub?.plan === plan.id ? '#64748b' : '#fff', fontWeight: 600, cursor: sub?.plan === plan.id ? 'default' : 'pointer', border: 'none', transition: '.3s' }}>{sub?.plan === plan.id ? 'Current Plan' : plan.price === 0 ? 'Downgrade' : 'Subscribe'}</button>
                 </div>
               ))}
             </div>

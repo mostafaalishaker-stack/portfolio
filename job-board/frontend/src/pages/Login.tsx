@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { api } from '../api/client.js';
+import { showToast } from '../utils/toast.js';
 
 interface UserData {
   id: number;
@@ -29,11 +30,13 @@ export default function Login({ onLogin }: Props) {
       if (isRegister) body.name = name;
       if (isRegister) body.role = role;
       const res = await api.post(endpoint, body);
+      showToast(isRegister ? 'Account created!' : 'Signed in!', 'success');
       onLogin(res.data.token, res.data.user);
     } catch (err) {
       const msg = err && typeof err === 'object' && 'response' in err
         ? (err as { response: { data: { error?: string } } }).response?.data?.error
         : 'Something went wrong';
+      showToast(msg || 'Something went wrong', 'error');
       setError(msg || 'Something went wrong');
     }
   };

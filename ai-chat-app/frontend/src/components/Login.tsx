@@ -57,8 +57,8 @@ export function Login({ onLogin }: Props) {
           autoComplete="current-password"
           className="w-full px-4 py-3 border dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg mb-6 focus:outline-none focus:ring-2 focus:ring-indigo-400" required />
         <button type="submit" disabled={submitting}
-          className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-50">
-          {submitting ? "Please wait..." : (isRegister ? "Register" : "Login")}
+          className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-50 flex items-center justify-center gap-2">
+          {submitting ? <><i className="fas fa-spinner fa-spin"></i> Please wait...</> : (isRegister ? "Register" : "Login")}
         </button>
         <p className="text-center mt-4 text-sm text-gray-500">
           {isRegister ? "Already have an account?" : "Don't have an account?"}

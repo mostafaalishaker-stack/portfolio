@@ -8,14 +8,18 @@ export function Login() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    setSubmitting(true);
     try {
       if (isRegister) await register(email, name, password);
       else await login(email, password);
     } catch (err: any) {
       toast.error(err.response?.data?.error || "Something went wrong");
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -66,9 +70,10 @@ export function Login() {
         </div>
         <button
           type="submit"
-          className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition"
+          disabled={submitting}
+          className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
         >
-          {isRegister ? "Register" : "Login"}
+          {submitting ? <><i className="fas fa-spinner fa-spin"></i> Please wait...</> : (isRegister ? "Register" : "Login")}
         </button>
         <p className="text-center mt-4 text-sm text-gray-500">
           {isRegister ? "Already have an account?" : "Don't have an account?"}{" "}

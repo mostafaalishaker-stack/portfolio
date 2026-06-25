@@ -5,7 +5,7 @@
   "scripts": { "dev": "vite", "start": "vite", "build": "tsc && vite build" },
   "dependencies": {
     "react": "^18.3.1", "react-dom": "^18.3.1", "axios": "^1.7.7",
-    "recharts": "^2.13.3"
+    "recharts": "^2.13.3", "react-hot-toast": "^2.4.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.12", "@types/react-dom": "^18.3.1",

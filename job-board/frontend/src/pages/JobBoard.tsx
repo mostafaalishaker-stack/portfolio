@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { api } from '../api/client.js';
+import { SkeletonList } from '../components/Skeleton.js';
+import { EmptyState } from '../components/EmptyState.js';
+import { showToast } from '../utils/toast.js';
 
 interface Job {
   id: number;
@@ -41,18 +44,23 @@ const btn: React.CSSProperties = {
 
 export default function JobBoard({ user, onLogout }: Props) {
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobsLoading, setJobsLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [applications, setApplications] = useState<Application[]>([]);
+  const [appsLoading, setAppsLoading] = useState(false);
   const [showAppModal, setShowAppModal] = useState(false);
   const [coverLetter, setCoverLetter] = useState('');
+  const [appSubmitting, setAppSubmitting] = useState(false);
   const [appMsg, setAppMsg] = useState('');
   const [showPostForm, setShowPostForm] = useState(false);
+  const [postingJob, setPostingJob] = useState(false);
   const [form, setForm] = useState({ title: '', company: '', location: '', type: 'remote' as Job['type'], salary: '', description: '', requirements: '' });
   const [appError, setAppError] = useState('');
 
   const fetchJobs = useCallback(async () => {
+    setJobsLoading(true);
     try {
       const params: Record<string, string> = {};
       if (search) params.search = search;
@@ -61,7 +69,8 @@ export default function JobBoard({ user, onLogout }: Props) {
       setJobs(res.data);
     } catch (err) {
       console.error('Failed to fetch jobs', err);
-    }
+      showToast('Failed to load jobs', 'error');
+    } finally { setJobsLoading(false); }
   }, [search, typeFilter]);
 
   useEffect(() => { fetchJobs(); }, [fetchJobs]);
@@ -72,32 +81,38 @@ export default function JobBoard({ user, onLogout }: Props) {
     setApplications([]);
     setAppMsg('');
     if (user.role === 'employer') {
+      setAppsLoading(true);
       try {
         const res = await api.get(`/api/applications/${job.id}`);
         setApplications(res.data);
       } catch (err) {
         console.error('Failed to fetch applications', err);
-      }
+        showToast('Failed to load applications', 'error');
+      } finally { setAppsLoading(false); }
     }
   };
 
   const handleApply = async () => {
     if (!selectedJob) return;
     setAppError('');
+    setAppSubmitting(true);
     try {
       await api.post(`/api/applications/${selectedJob.id}/apply`, { coverLetter });
       setAppMsg('Application submitted successfully!');
       setCoverLetter('');
+      showToast('Application submitted!', 'success');
     } catch (err) {
       const msg = err && typeof err === 'object' && 'response' in err
         ? (err as { response: { data: { error?: string } } }).response?.data?.error
         : 'Failed to apply';
       setAppError(msg || 'Failed to apply');
-    }
+      showToast(msg || 'Failed to apply', 'error');
+    } finally { setAppSubmitting(false); }
   };
 
   const handlePostJob = async (e: React.FormEvent) => {
     e.preventDefault();
+    setPostingJob(true);
     try {
       const res = await api.post('/api/jobs', {
         ...form,
@@ -106,9 +121,11 @@ export default function JobBoard({ user, onLogout }: Props) {
       setJobs(prev => [res.data, ...prev]);
       setShowPostForm(false);
       setForm({ title: '', company: '', location: '', type: 'remote', salary: '', description: '', requirements: '' });
+      showToast('Job posted successfully!', 'success');
     } catch (err) {
       console.error('Failed to post job', err);
-    }
+      showToast('Failed to post job', 'error');
+    } finally { setPostingJob(false); }
   };
 
   const inputStyle: React.CSSProperties = {
@@ -167,7 +184,9 @@ export default function JobBoard({ user, onLogout }: Props) {
         )}
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {jobs.map(job => (
+          {jobsLoading ? (
+            <SkeletonList count={5} />
+          ) : jobs.map(job => (
             <div
               key={job.id}
               onClick={() => selectJob(job)}
@@ -190,8 +209,8 @@ export default function JobBoard({ user, onLogout }: Props) {
               </div>
             </div>
           ))}
-          {jobs.length === 0 && (
-            <div style={{ textAlign: 'center', color: '#64748b', padding: '40px' }}>No jobs found</div>
+          {!jobsLoading && jobs.length === 0 && (
+            <EmptyState icon="💼" title="No jobs found" message="Try adjusting your search or filters." />
           )}
         </div>
       </div>
@@ -220,7 +239,7 @@ export default function JobBoard({ user, onLogout }: Props) {
               <label htmlFor="job-reqs" style={{ display: 'block', marginBottom: '4px', color: '#94a3b8', fontSize: '13px' }}>Requirements (comma separated)</label>
               <input id="job-reqs" style={inputStyle} placeholder="Requirements (comma separated)" value={form.requirements} onChange={e => setForm({ ...form, requirements: e.target.value })} />
               <div style={{ display: 'flex', gap: '10px' }}>
-                <button type="submit" style={{ ...btn, background: 'linear-gradient(135deg,#3b82f6,#06b6d4)', color: '#fff' }}>Post Job</button>
+                <button type="submit" disabled={postingJob} style={{ ...btn, background: 'linear-gradient(135deg,#3b82f6,#06b6d4)', color: '#fff', opacity: postingJob ? .6 : 1 }}>{postingJob ? 'Posting...' : 'Post Job'}</button>
                 <button type="button" onClick={() => setShowPostForm(false)} style={{ ...btn, background: '#1e293b', color: '#fff' }}>Cancel</button>
               </div>
             </form>
@@ -269,7 +288,7 @@ export default function JobBoard({ user, onLogout }: Props) {
                           onChange={e => setCoverLetter(e.target.value)}
                         />
                         <div style={{ display: 'flex', gap: '10px' }}>
-                          <button onClick={handleApply} style={{ ...btn, background: 'linear-gradient(135deg,#3b82f6,#06b6d4)', color: '#fff' }}>Submit Application</button>
+                          <button onClick={handleApply} disabled={appSubmitting} style={{ ...btn, background: 'linear-gradient(135deg,#3b82f6,#06b6d4)', color: '#fff', opacity: appSubmitting ? .6 : 1 }}>{appSubmitting ? 'Submitting...' : 'Submit Application'}</button>
                           <button onClick={() => setShowAppModal(false)} style={{ ...btn, background: '#1e293b', color: '#fff' }}>Cancel</button>
                         </div>
                       </div>
@@ -282,8 +301,10 @@ export default function JobBoard({ user, onLogout }: Props) {
             {user.role === 'employer' && (
               <div style={{ marginTop: '30px' }}>
                 <h3 style={{ marginBottom: '12px', fontSize: '18px' }}>Applicants ({applications.length})</h3>
-                {applications.length === 0 ? (
-                  <div style={{ color: '#64748b' }}>No applications yet</div>
+                {appsLoading ? (
+                  <SkeletonList count={3} />
+                ) : applications.length === 0 ? (
+                  <EmptyState icon="📋" title="No applications yet" message="Candidates will appear here when they apply." />
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     {applications.map(app => (
@@ -300,8 +321,8 @@ export default function JobBoard({ user, onLogout }: Props) {
             )}
           </div>
         ) : (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: '#64748b' }}>
-            Select a job to view details
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <EmptyState icon="👆" title="Select a job" message="Choose a job from the list to view details and apply." />
           </div>
         )}
       </div>

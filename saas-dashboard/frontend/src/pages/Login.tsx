@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { showToast } from '../utils/toast';
 
 interface Props { onLogin: (token: string) => void }
 
@@ -18,9 +19,9 @@ export default function Login({ onLogin }: Props) {
         body: JSON.stringify({ email, password, name: email.split('@')[0] }),
       });
       const data = await res.json();
-      if (data.token) onLogin(data.token);
+      if (data.token) { showToast(isRegister ? 'Account created successfully!' : 'Signed in successfully!', 'success'); onLogin(data.token); }
       else setErrorMessage(data.error || 'Authentication failed');
-    } catch (err) { console.error('Login failed:', err); setErrorMessage('Network error'); } finally { setLoading(false); }
+    } catch (err) { console.error('Login failed:', err); setErrorMessage('Network error'); showToast('Network error', 'error'); } finally { setLoading(false); }
   };
 
   return (
