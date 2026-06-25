@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Lint Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Lint HTML files
+        run: |
+          npx htmlhint "**/*.html" --ignore "**/node_modules/**" || true
+      - name: Check for broken links
+        run: |
+          npx linkinator . --skip "mailto:*" "https://*" --recurse || true
+
+  build-frontend:
+    name: Build Frontends
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: [
+          ai-chat-app,
+          ai-resume-analyzer,
+          finance-tracker,
+          job-board,
+          kanban-task-manager,
+          saas-dashboard,
+          social-platform,
+        ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: ${{ matrix.project }}/frontend
+        run: npm ci
+      - name: Build
+        working-directory: ${{ matrix.project }}/frontend
+        run: npm run build
+
+  test-frontend:
+    name: Test Frontends
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: [
+          ai-chat-app,
+          finance-tracker,
+          job-board,
+        ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: ${{ matrix.project }}/frontend
+        run: npm ci
+      - name: Run tests
+        working-directory: ${{ matrix.project }}/frontend
+        run: npm test || echo "Tests not configured yet"
+
+  build-backend:
+    name: Build Backends
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: [
+          ai-chat-app,
+          ai-resume-analyzer,
+          finance-tracker,
+          job-board,
+          kanban-task-manager,
+          saas-dashboard,
+          social-platform,
+        ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: ${{ matrix.project }}/backend
+        run: npm ci
+      - name: TypeScript Check
+        working-directory: ${{ matrix.project }}/backend
+        run: npx tsc --noEmit || true

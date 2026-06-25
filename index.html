@@ -227,17 +227,23 @@
     .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:12px 24px;border-radius:10px;font-size:.9rem;font-weight:500;z-index:9999;opacity:0;transition:var(--transition);pointer-events:none}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
     @media(max-width:768px){.toast{bottom:80px}}
+    .skip-link{position:absolute;top:-40px;left:0;background:#6366f1;color:#fff;padding:8px 16px;z-index:10000;font-size:14px;text-decoration:none;transition:top .2s}
+    .skip-link:focus{top:0}
+    :focus-visible{outline:2px solid #6366f1;outline-offset:2px;border-radius:4px}
+    button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #6366f1;outline-offset:2px}
   </style>
 </head>
 <body>
 
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
   <div id="progressBar"></div>
   <button id="scrollTop" aria-label="Scroll to top"><i class="fas fa-arrow-up"></i></button>
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="alert"></div>
 
-  <nav>
+  <nav aria-label="Main navigation">
     <div class="container nav-inner">
-      <a href="./" class="logo">MA.</a>
+      <a href="./" class="logo" aria-current="page">MA.</a>
       <ul class="nav-links" id="navLinks">
         <li><a href="#about">About</a></li>
         <li><a href="#services">Services</a></li>
@@ -257,7 +263,7 @@
     </div>
   </nav>
 
-  <section class="hero">
+  <section class="hero" id="main-content">
     <canvas id="particles-canvas"></canvas>
     <div class="container hero-grid" style="position:relative;z-index:1">
       <div>
@@ -420,9 +426,9 @@
           <div class="project-img" style="background:linear-gradient(135deg,#6366f1,#a78bfa)">
             <i class="fas fa-columns"></i>
             <div class="overlay">
-              <a href="./kanban-task-manager/" title="View Details"><i class="fas fa-folder-open"></i></a>
-              <a href="./kanban-task-manager/demo.html" title="Live Demo"><i class="fas fa-play-circle"></i></a>
-              <a href="https://github.com/mostafaalishaker-stack" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+              <a href="./kanban-task-manager/" title="View Details" aria-label="View Kanban Task Manager project details"><i class="fas fa-folder-open"></i></a>
+              <a href="./kanban-task-manager/demo.html" title="Live Demo" aria-label="View Kanban Task Manager live demo"><i class="fas fa-play-circle"></i></a>
+              <a href="https://github.com/mostafaalishaker-stack" target="_blank" title="GitHub" aria-label="View Kanban Task Manager on GitHub"><i class="fab fa-github"></i></a>
             </div>
           </div>
            <div class="project-body">
@@ -435,9 +441,9 @@
           <div class="project-img" style="background:linear-gradient(135deg,#6366f1,#a78bfa)">
             <i class="fas fa-brain"></i>
             <div class="overlay">
-              <a href="./ai-study-buddy/" title="View Details"><i class="fas fa-folder-open"></i></a>
-              <a href="./ai-study-buddy/demo.html" title="Live Demo"><i class="fas fa-play-circle"></i></a>
-              <a href="https://github.com/mostafaalishaker-stack/ai-study-buddy" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+              <a href="./ai-study-buddy/" title="View Details" aria-label="View AI Study Buddy project details"><i class="fas fa-folder-open"></i></a>
+              <a href="./ai-study-buddy/demo.html" title="Live Demo" aria-label="View AI Study Buddy live demo"><i class="fas fa-play-circle"></i></a>
+              <a href="https://github.com/mostafaalishaker-stack/ai-study-buddy" target="_blank" title="GitHub" aria-label="View AI Study Buddy on GitHub"><i class="fab fa-github"></i></a>
             </div>
           </div>
           <div class="project-body">
@@ -450,9 +456,9 @@
           <div class="project-img" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)">
             <i class="fas fa-shopping-cart"></i>
             <div class="overlay">
-              <a href="./ecommerce-platform/" title="View Details"><i class="fas fa-folder-open"></i></a>
-              <a href="./ecommerce-platform/demo.html" title="Live Demo"><i class="fas fa-play-circle"></i></a>
-              <a href="https://github.com/mostafaalishaker-stack" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+              <a href="./ecommerce-platform/" title="View Details" aria-label="View E-Commerce Platform project details"><i class="fas fa-folder-open"></i></a>
+              <a href="./ecommerce-platform/demo.html" title="Live Demo" aria-label="View E-Commerce Platform live demo"><i class="fas fa-play-circle"></i></a>
+              <a href="https://github.com/mostafaalishaker-stack" target="_blank" title="GitHub" aria-label="View E-Commerce Platform on GitHub"><i class="fab fa-github"></i></a>
             </div>
           </div>
           <div class="project-body">
@@ -465,9 +471,9 @@
           <div class="project-img" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">
             <i class="fas fa-robot"></i>
             <div class="overlay">
-              <a href="./ai-chat-app/" title="View Details"><i class="fas fa-folder-open"></i></a>
-              <a href="./ai-chat-app/demo.html" title="Live Demo"><i class="fas fa-play-circle"></i></a>
-              <a href="https://github.com/mostafaalishaker-stack" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+              <a href="./ai-chat-app/" title="View Details" aria-label="View AI Chat App project details"><i class="fas fa-folder-open"></i></a>
+              <a href="./ai-chat-app/demo.html" title="Live Demo" aria-label="View AI Chat App live demo"><i class="fas fa-play-circle"></i></a>
+              <a href="https://github.com/mostafaalishaker-stack" target="_blank" title="GitHub" aria-label="View AI Chat App on GitHub"><i class="fab fa-github"></i></a>
             </div>
           </div>
           <div class="project-body">
@@ -480,9 +486,9 @@
           <div class="project-img" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
             <i class="fas fa-file-alt"></i>
             <div class="overlay">
-              <a href="./ai-resume-analyzer/" title="View Details"><i class="fas fa-folder-open"></i></a>
-              <a href="./ai-resume-analyzer/demo.html" title="Live Demo"><i class="fas fa-play-circle"></i></a>
-              <a href="https://github.com/mostafaalishaker-stack" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+              <a href="./ai-resume-analyzer/" title="View Details" aria-label="View AI Resume Analyzer project details"><i class="fas fa-folder-open"></i></a>
+              <a href="./ai-resume-analyzer/demo.html" title="Live Demo" aria-label="View AI Resume Analyzer live demo"><i class="fas fa-play-circle"></i></a>
+              <a href="https://github.com/mostafaalishaker-stack" target="_blank" title="GitHub" aria-label="View AI Resume Analyzer on GitHub"><i class="fab fa-github"></i></a>
             </div>
           </div>
           <div class="project-body">
@@ -495,9 +501,9 @@
           <div class="project-img" style="background:linear-gradient(135deg,#6366f1,#06b6d4)">
             <i class="fas fa-cloud"></i>
             <div class="overlay">
-              <a href="./saas-dashboard/" title="View Details"><i class="fas fa-folder-open"></i></a>
-              <a href="./saas-dashboard/demo.html" title="Live Demo"><i class="fas fa-play-circle"></i></a>
-              <a href="https://github.com/mostafaalishaker-stack" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+              <a href="./saas-dashboard/" title="View Details" aria-label="View SaaS Dashboard project details"><i class="fas fa-folder-open"></i></a>
+              <a href="./saas-dashboard/demo.html" title="Live Demo" aria-label="View SaaS Dashboard live demo"><i class="fas fa-play-circle"></i></a>
+              <a href="https://github.com/mostafaalishaker-stack" target="_blank" title="GitHub" aria-label="View SaaS Dashboard on GitHub"><i class="fab fa-github"></i></a>
             </div>
           </div>
           <div class="project-body">
@@ -510,9 +516,9 @@
           <div class="project-img" style="background:linear-gradient(135deg,#ec4899,#f43f5e)">
             <i class="fas fa-users"></i>
             <div class="overlay">
-              <a href="./social-platform/" title="View Details"><i class="fas fa-folder-open"></i></a>
-              <a href="./social-platform/demo.html" title="Live Demo"><i class="fas fa-play-circle"></i></a>
-              <a href="https://github.com/mostafaalishaker-stack" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+              <a href="./social-platform/" title="View Details" aria-label="View Social Platform project details"><i class="fas fa-folder-open"></i></a>
+              <a href="./social-platform/demo.html" title="Live Demo" aria-label="View Social Platform live demo"><i class="fas fa-play-circle"></i></a>
+              <a href="https://github.com/mostafaalishaker-stack" target="_blank" title="GitHub" aria-label="View Social Platform on GitHub"><i class="fab fa-github"></i></a>
             </div>
           </div>
           <div class="project-body">
@@ -525,9 +531,9 @@
           <div class="project-img" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)">
             <i class="fas fa-briefcase"></i>
             <div class="overlay">
-              <a href="./job-board/" title="View Details"><i class="fas fa-folder-open"></i></a>
-              <a href="./job-board/demo.html" title="Live Demo"><i class="fas fa-play-circle"></i></a>
-              <a href="https://github.com/mostafaalishaker-stack" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+              <a href="./job-board/" title="View Details" aria-label="View Job Board Platform project details"><i class="fas fa-folder-open"></i></a>
+              <a href="./job-board/demo.html" title="Live Demo" aria-label="View Job Board Platform live demo"><i class="fas fa-play-circle"></i></a>
+              <a href="https://github.com/mostafaalishaker-stack" target="_blank" title="GitHub" aria-label="View Job Board Platform on GitHub"><i class="fab fa-github"></i></a>
             </div>
           </div>
           <div class="project-body">

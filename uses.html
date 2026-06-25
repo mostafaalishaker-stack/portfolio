@@ -45,13 +45,14 @@ section h2 i{color:var(--primary)}
 .tag-new{background:rgba(34,197,94,.12);color:#22c55e}
 .theme-toggle{position:fixed;top:24px;right:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--bg-card);color:var(--text);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:var(--transition);z-index:100}
 .theme-toggle:hover{border-color:var(--primary)}
-@media(max-width:600px){header h1{font-size:30px}.grid{grid-template-columns:1fr}}
+.skip-link{position:absolute;top:-40px;left:0;background:#6366f1;color:#fff;padding:8px 16px;z-index:10000;font-size:14px;text-decoration:none;transition:top .2s}.skip-link:focus{top:0}:focus-visible{outline:2px solid #6366f1;outline-offset:2px;border-radius:4px}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #6366f1;outline-offset:2px}@media(max-width:600px){header h1{font-size:30px}.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
-<div class="container">
-  <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Portfolio</a>
+<div class="container" id="main-content">
+  <a href="index.html" class="back-link" aria-label="Back to portfolio"><i class="fas fa-arrow-left"></i> Back to Portfolio</a>
   <header>
     <h1>/uses</h1>
     <p>The tools, technologies, and gear I use daily — inspired by <a href="https://uses.tech" style="color:var(--primary);text-decoration:none" target="_blank">uses.tech</a></p>
