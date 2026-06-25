@@ -25,8 +25,8 @@
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;transition:background .3s ease,border-color .3s ease,color .3s ease}
     :root{--bg:#f8fafc;--bg-card:#ffffff;--text:#1e293b;--text-sec:#475569;--primary:#6366f1;--primary-dark:#4f46e5;--accent:#06b6d4;--border:#e2e8f0;--shadow:0 4px 20px rgba(0,0,0,.06);--radius:16px;--transition:.3s cubic-bezier(.4,0,.2,1)}
     .dark{--bg:#0b1120;--bg-card:#131c31;--text:#f1f5f9;--text-sec:#94a3b8;--border:#1e293b;--shadow:0 4px 20px rgba(0,0,0,.3)}
-    html{scroll-behavior:smooth}
-    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;transition:var(--transition);overflow-x:hidden}
+    html{scroll-behavior:smooth;background:var(--bg)}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
     a{text-decoration:none;color:inherit}
     .container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
     /* Progress Bar */
@@ -191,6 +191,9 @@
     .mobile-bottom-nav a i{font-size:1.2rem}
     .mobile-bottom-nav a:hover,.mobile-bottom-nav a.active{color:var(--primary);background:rgba(99,102,241,.08)}
     @media(max-width:768px){
+      nav,.dark nav{background:var(--bg);backdrop-filter:none}
+      #particles-canvas{display:none}
+      .hero-img,.hero-img::after,.hero-badge{animation:none}
       .nav-links{position:fixed;top:70px;left:0;width:100%;background:var(--bg);flex-direction:column;padding:24px;gap:20px;transform:translateY(-120%);transition:var(--transition);border-bottom:1px solid var(--border);z-index:999}
       .nav-links.open{transform:translateY(0)}
       .hamburger{display:flex}
