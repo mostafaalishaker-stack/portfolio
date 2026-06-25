@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import toast from 'react-hot-toast'
 import api from '../api/client'
 import {
@@ -7,6 +7,9 @@ import {
 } from 'recharts'
 import { SkeletonCard, SkeletonList } from '../components/Skeleton'
 import { EmptyState } from '../components/EmptyState'
+import { Pagination } from '../components/Pagination'
+import { SearchBar } from '../components/SearchBar'
+import { FilterBar } from '../components/FilterBar'
 
 interface Transaction {
   id: number
@@ -99,6 +102,8 @@ const styles: Record<string, React.CSSProperties> = {
   empty: { color: '#64748b', fontSize: '14px', textAlign: 'center' as const, padding: '20px' },
 }
 
+const TRANSACTIONS_PER_PAGE = 10;
+
 function Dashboard({ token, onLogout }: Props) {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [summary, setSummary] = useState<Summary | null>(null)
@@ -110,6 +115,24 @@ function Dashboard({ token, onLogout }: Props) {
   const [category, setCategory] = useState(CATEGORIES[0])
   const [description, setDescription] = useState('')
   const [date, setDate] = useState(new Date().toISOString().split('T')[0])
+  const [transPage, setTransPage] = useState(1)
+  const [transSearch, setTransSearch] = useState('')
+  const [transTypeFilter, setTransTypeFilter] = useState('all')
+  const [transCatFilter, setTransCatFilter] = useState('all')
+  const sortedTransactions = [...transactions].reverse()
+  const filteredTransactions = useMemo(() => {
+    return sortedTransactions.filter(t => {
+      if (transSearch && !t.description.toLowerCase().includes(transSearch.toLowerCase())) return false;
+      if (transTypeFilter !== 'all' && t.type !== transTypeFilter) return false;
+      if (transCatFilter !== 'all' && t.category !== transCatFilter) return false;
+      return true;
+    });
+  }, [sortedTransactions, transSearch, transTypeFilter, transCatFilter]);
+  const totalTransPages = Math.max(1, Math.ceil(filteredTransactions.length / TRANSACTIONS_PER_PAGE))
+  const paginatedTransactions = filteredTransactions.slice(
+    (transPage - 1) * TRANSACTIONS_PER_PAGE,
+    transPage * TRANSACTIONS_PER_PAGE
+  )
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -141,6 +164,7 @@ function Dashboard({ token, onLogout }: Props) {
       setAmount('')
       setDescription('')
       toast.success('Transaction added')
+      setTransPage(1)
       fetchData()
     } catch (err) {
       toast.error('Failed to add transaction')
@@ -284,29 +308,37 @@ function Dashboard({ token, onLogout }: Props) {
       )}
 
       <div style={styles.transactionsSection}>
-        <div style={styles.transTitle}><i className="fas fa-list" style={{ marginRight: '8px', color: '#3b82f6' }}></i>Transactions ({transactions.length})</div>
-        {transactions.length === 0 ? (
+        <div style={styles.transTitle}><i className="fas fa-list" style={{ marginRight: '8px', color: '#3b82f6' }}></i>Transactions ({filteredTransactions.length})</div>
+        <div style={{ display: 'flex', gap: '16px', marginBottom: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
+          <SearchBar value={transSearch} onChange={v => { setTransSearch(v); setTransPage(1); }} placeholder="Search description..." />
+          <FilterBar options={[{ label: 'All', value: 'all' }, { label: 'Income', value: 'income' }, { label: 'Expense', value: 'expense' }]} selected={transTypeFilter} onChange={v => { setTransTypeFilter(v); setTransPage(1); }} />
+          <FilterBar options={[{ label: 'All', value: 'all' }, ...CATEGORIES.map(c => ({ label: c, value: c }))]} selected={transCatFilter} onChange={v => { setTransCatFilter(v); setTransPage(1); }} />
+        </div>
+        {filteredTransactions.length === 0 ? (
           <EmptyState icon="💳" title="No transactions yet" message="Add your first transaction using the form above" />
         ) : (
-          transactions.slice().reverse().map((t) => (
-            <div key={t.id} style={styles.transItem}>
-              <div style={styles.transLeft}>
-                <div style={{ ...styles.transDot, backgroundColor: t.type === 'income' ? '#22c55e' : '#ef4444' }}></div>
-                <div>
-                  <div style={styles.transDesc}>{t.description}</div>
-                  <div style={styles.transCat}>{t.category} &middot; {new Date(t.date).toLocaleDateString()}</div>
+          <>
+            {paginatedTransactions.map((t) => (
+              <div key={t.id} style={styles.transItem}>
+                <div style={styles.transLeft}>
+                  <div style={{ ...styles.transDot, backgroundColor: t.type === 'income' ? '#22c55e' : '#ef4444' }}></div>
+                  <div>
+                    <div style={styles.transDesc}>{t.description}</div>
+                    <div style={styles.transCat}>{t.category} &middot; {new Date(t.date).toLocaleDateString()}</div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{ ...styles.transAmount, color: t.type === 'income' ? '#22c55e' : '#ef4444' }}>
+                    {t.type === 'income' ? '+' : '-'}${t.amount.toFixed(2)}
+                  </span>
+                  <button style={styles.deleteBtn} onClick={() => handleDelete(t.id)} disabled={deleting === t.id}>
+                    {deleting === t.id ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-trash-alt"></i>}
+                  </button>
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{ ...styles.transAmount, color: t.type === 'income' ? '#22c55e' : '#ef4444' }}>
-                  {t.type === 'income' ? '+' : '-'}${t.amount.toFixed(2)}
-                </span>
-                <button style={styles.deleteBtn} onClick={() => handleDelete(t.id)} disabled={deleting === t.id}>
-                  {deleting === t.id ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-trash-alt"></i>}
-                </button>
-              </div>
-            </div>
-          ))
+            ))}
+            <Pagination currentPage={transPage} totalPages={totalTransPages} onPageChange={setTransPage} />
+          </>
         )}
       </div>
     </div>

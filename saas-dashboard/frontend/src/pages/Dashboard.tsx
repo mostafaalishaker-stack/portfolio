@@ -1,7 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { SkeletonCard } from '../components/Skeleton';
 import { EmptyState } from '../components/EmptyState';
+import { Pagination } from '../components/Pagination';
+import { SearchBar } from '../components/SearchBar';
+import { FilterBar } from '../components/FilterBar';
 import { showToast } from '../utils/toast';
 
 interface Props { token: string; onLogout: () => void }
@@ -13,13 +16,32 @@ interface SubData { plan?: string; status?: string; currentPeriodEnd?: number }
 interface PlanData { id: string; name: string; price: number; features: string[] }
 
 const COLORS = ['#6366f1', '#06b6d4', '#22c55e', '#eab308'];
+const ACTIVITY_PER_PAGE = 10;
 
 export default function Dashboard({ token, onLogout }: Props) {
   const [activeTab, setActiveTab] = useState<'overview' | 'billing' | 'team' | 'settings'>('overview');
+  const [activityPage, setActivityPage] = useState(1);
   const [stats, setStats] = useState<Stats | null>(null);
   const [org, setOrg] = useState<OrgData | null>(null);
   const [sub, setSub] = useState<SubData | null>(null);
   const [plans, setPlans] = useState<PlanData[]>([]);
+  const [teamSearch, setTeamSearch] = useState('');
+  const [teamStatusFilter, setTeamStatusFilter] = useState('all');
+
+  const teamMembers = useMemo(() => [
+    { email: 'admin@example.com', role: 'Admin', status: 'Active', initials: 'A' },
+    { email: 'member1@example.com', role: 'Member', status: 'Active', initials: 'M' },
+    { email: 'member2@example.com', role: 'Member', status: 'Inactive', initials: 'M' },
+    { email: 'viewer@example.com', role: 'Viewer', status: 'Pending', initials: 'V' },
+  ], []);
+
+  const filteredTeamMembers = useMemo(() => {
+    return teamMembers.filter(m => {
+      if (teamSearch && !m.email.toLowerCase().includes(teamSearch.toLowerCase())) return false;
+      if (teamStatusFilter !== 'all' && m.status !== teamStatusFilter) return false;
+      return true;
+    });
+  }, [teamMembers, teamSearch, teamStatusFilter]);
 
   const api = useCallback(async <T = unknown>(path: string, opts?: RequestInit): Promise<T> => {
     try {
@@ -120,15 +142,20 @@ export default function Dashboard({ token, onLogout }: Props) {
               <h3 style={{ fontSize: '1.05rem', marginBottom: 16 }}>Recent Activity</h3>
               {stats.recentActivity.length === 0 ? (
                 <EmptyState icon="📋" title="No recent activity" message="User actions will appear here." />
-              ) : stats.recentActivity.map((a: { action: string; time: string; type: string }, i: number) => (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: i < stats.recentActivity.length - 1 ? '1px solid #1e293b' : 'none' }}>
-                  <span style={{ fontSize: '.9rem', display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <i className={`fas fa-${a.type === 'user' ? 'user-plus' : a.type === 'billing' ? 'credit-card' : a.type === 'project' ? 'folder' : a.type === 'payment' ? 'dollar' : a.type === 'team' ? 'user-friends' : 'key'}`} style={{ color: '#6366f1', width: 16 }}></i>
-                    {a.action}
-                  </span>
-                  <span style={{ color: '#64748b', fontSize: '.8rem' }}>{a.time}</span>
-                </div>
-              ))}
+              ) : (
+                <>
+                  {stats.recentActivity.slice((activityPage - 1) * ACTIVITY_PER_PAGE, activityPage * ACTIVITY_PER_PAGE).map((a: { action: string; time: string; type: string }, i: number) => (
+                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: i < Math.min(ACTIVITY_PER_PAGE, stats.recentActivity.length) - 1 ? '1px solid #1e293b' : 'none' }}>
+                      <span style={{ fontSize: '.9rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <i className={`fas fa-${a.type === 'user' ? 'user-plus' : a.type === 'billing' ? 'credit-card' : a.type === 'project' ? 'folder' : a.type === 'payment' ? 'dollar' : a.type === 'team' ? 'user-friends' : 'key'}`} style={{ color: '#6366f1', width: 16 }}></i>
+                        {a.action}
+                      </span>
+                      <span style={{ color: '#64748b', fontSize: '.8rem' }}>{a.time}</span>
+                    </div>
+                  ))}
+                  <Pagination currentPage={activityPage} totalPages={Math.ceil(stats.recentActivity.length / ACTIVITY_PER_PAGE)} onPageChange={setActivityPage} />
+                </>
+              )}
             </div>
           </div>
         )}
@@ -171,24 +198,29 @@ export default function Dashboard({ token, onLogout }: Props) {
             <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: 24 }}>Team Management</h2>
             <div style={{ background: '#131c31', border: '1px solid #1e293b', borderRadius: 16, padding: 24 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                <h3 style={{ fontSize: '1.05rem' }}>Members</h3>
+                <h3 style={{ fontSize: '1.05rem' }}>Members ({filteredTeamMembers.length})</h3>
                 <button style={{ padding: '10px 20px', borderRadius: 10, background: '#6366f1', color: '#fff', fontWeight: 600, fontSize: '.85rem', cursor: 'pointer', border: 'none' }}><i className="fas fa-plus" aria-hidden="true"></i> Invite</button>
               </div>
+              <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
+                <SearchBar value={teamSearch} onChange={setTeamSearch} placeholder="Search by name or email..." />
+                <FilterBar options={[{ label: 'All', value: 'all' }, { label: 'Active', value: 'Active' }, { label: 'Inactive', value: 'Inactive' }, { label: 'Pending', value: 'Pending' }]} selected={teamStatusFilter} onChange={setTeamStatusFilter} />
+              </div>
               <div style={{ display: 'grid', gap: 12 }}>
-                {[
-                  { email: 'admin@example.com', role: 'Admin', initials: 'A' },
-                  { email: 'member1@example.com', role: 'Member', initials: 'M' },
-                  { email: 'member2@example.com', role: 'Member', initials: 'M' },
-                  { email: 'viewer@example.com', role: 'Viewer', initials: 'V' },
-                ].map((m, i) => (
+                {filteredTeamMembers.map((m, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: '#0b1120', borderRadius: 10, border: '1px solid #1e293b' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                       <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#6366f1,#06b6d4)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: '.85rem' }}>{m.initials}</div>
-                      <div><span style={{ fontSize: '.9rem' }}>{m.email}</span></div>
+                      <div>
+                        <span style={{ fontSize: '.9rem' }}>{m.email}</span>
+                        <span style={{ fontSize: '.75rem', color: '#64748b', marginLeft: 8 }}>{m.status}</span>
+                      </div>
                     </div>
                     <span style={{ padding: '4px 12px', borderRadius: 6, background: m.role === 'Admin' ? 'rgba(99,102,241,.1)' : 'rgba(6,182,212,.1)', color: m.role === 'Admin' ? '#6366f1' : '#06b6d4', fontSize: '.8rem', fontWeight: 500 }}>{m.role}</span>
                   </div>
                 ))}
+                {filteredTeamMembers.length === 0 && (
+                  <div style={{ textAlign: 'center', padding: '20px', color: '#64748b' }}>No members match your search or filter.</div>
+                )}
               </div>
             </div>
           </div>

@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, closestCorners } from "@dnd-kit/core";
 import api from "../api/client";
 import { Card as CardType, Board as BoardType } from "../types";
 import { Column } from "./Column";
 import { Card } from "./Card";
+import { SearchBar } from "./SearchBar";
 import { useAuth } from "../hooks/useAuth";
 import toast from "react-hot-toast";
 import { SkeletonCard, SkeletonList } from "./Skeleton";
@@ -16,7 +17,19 @@ export function Board() {
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState<{ type: "card" | "board" | "rename-board" | "edit-card"; columnId?: string; card?: CardType } | null>(null);
   const [modalInput, setModalInput] = useState("");
+  const [cardSearch, setCardSearch] = useState("");
   const { logout } = useAuth();
+
+  const filteredBoard = useMemo(() => {
+    if (!board || !cardSearch) return board;
+    return {
+      ...board,
+      columns: board.columns.map(col => ({
+        ...col,
+        cards: col.cards.filter(c => c.title.toLowerCase().includes(cardSearch.toLowerCase())),
+      })),
+    };
+  }, [board, cardSearch]);
 
   const fetchBoards = useCallback(async () => {
     try {
@@ -163,6 +176,7 @@ export function Board() {
       <header className="bg-white shadow-sm border-b px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h1 className="text-xl font-bold text-gray-800">Kanban</h1>
+          <SearchBar value={cardSearch} onChange={setCardSearch} placeholder="Search cards..." />
           <select
             className="border rounded-lg px-3 py-2 text-sm"
             value={board?.id || ""}
@@ -193,7 +207,7 @@ export function Board() {
           <DndContext
             collisionDetection={closestCorners}
             onDragStart={(event: DragStartEvent) => {
-              for (const col of board.columns) {
+              for (const col of (filteredBoard || board).columns) {
                 const card = col.cards.find((c) => c.id === event.active.id);
                 if (card) { setActiveCard(card); break; }
               }
@@ -201,7 +215,7 @@ export function Board() {
             onDragEnd={handleDragEnd}
           >
             <div className="flex gap-6 overflow-x-auto pb-4">
-              {board.columns.map((col) => (
+              {(filteredBoard || board).columns.map((col) => (
                 <Column
                   key={col.id}
                   column={col}

@@ -2,6 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { api } from '../api/client.js';
 import { SkeletonList } from '../components/Skeleton.js';
 import { EmptyState } from '../components/EmptyState.js';
+import { Pagination } from '../components/Pagination.js';
+import { SearchBar } from '../components/SearchBar.js';
+import { FilterBar } from '../components/FilterBar.js';
 import { showToast } from '../utils/toast.js';
 
 interface Job {
@@ -42,12 +45,24 @@ const btn: React.CSSProperties = {
   fontWeight: 600, fontSize: '14px',
 };
 
+const JOBS_PER_PAGE = 10;
+
+const typeOptions = [
+  { label: 'All', value: 'all' },
+  { label: 'Remote', value: 'remote' },
+  { label: 'Onsite', value: 'onsite' },
+  { label: 'Hybrid', value: 'hybrid' },
+];
+
 export default function JobBoard({ user, onLogout }: Props) {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [jobsLoading, setJobsLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [jobsPage, setJobsPage] = useState(1);
+  const totalJobsPages = Math.max(1, Math.ceil(jobs.length / JOBS_PER_PAGE));
+  const paginatedJobs = jobs.slice((jobsPage - 1) * JOBS_PER_PAGE, jobsPage * JOBS_PER_PAGE);
   const [applications, setApplications] = useState<Application[]>([]);
   const [appsLoading, setAppsLoading] = useState(false);
   const [showAppModal, setShowAppModal] = useState(false);
@@ -61,6 +76,7 @@ export default function JobBoard({ user, onLogout }: Props) {
 
   const fetchJobs = useCallback(async () => {
     setJobsLoading(true);
+    setJobsPage(1);
     try {
       const params: Record<string, string> = {};
       if (search) params.search = search;
@@ -154,27 +170,11 @@ export default function JobBoard({ user, onLogout }: Props) {
           </div>
         </div>
 
-        <input
-          style={{ ...inputStyle, marginBottom: '12px' }}
-          placeholder="Search jobs..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
-
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
-          {['all', 'remote', 'onsite', 'hybrid'].map(t => (
-            <button
-              key={t}
-              onClick={() => setTypeFilter(t)}
-              style={{
-                ...btn, flex: 1, textTransform: 'capitalize',
-                background: typeFilter === t ? 'linear-gradient(135deg,#3b82f6,#06b6d4)' : '#1e293b',
-                color: '#fff',
-              }}
-            >
-              {t}
-            </button>
-          ))}
+        <div style={{ marginBottom: '16px' }}>
+          <SearchBar value={search} onChange={setSearch} placeholder="Search by title or company..." />
+        </div>
+        <div style={{ marginBottom: '20px' }}>
+          <FilterBar options={typeOptions} selected={typeFilter} onChange={setTypeFilter} />
         </div>
 
         {user.role === 'employer' && (
@@ -186,7 +186,7 @@ export default function JobBoard({ user, onLogout }: Props) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {jobsLoading ? (
             <SkeletonList count={5} />
-          ) : jobs.map(job => (
+          ) : paginatedJobs.map(job => (
             <div
               key={job.id}
               onClick={() => selectJob(job)}
@@ -211,6 +211,9 @@ export default function JobBoard({ user, onLogout }: Props) {
           ))}
           {!jobsLoading && jobs.length === 0 && (
             <EmptyState icon="💼" title="No jobs found" message="Try adjusting your search or filters." />
+          )}
+          {!jobsLoading && jobs.length > 0 && (
+            <Pagination currentPage={jobsPage} totalPages={totalJobsPages} onPageChange={setJobsPage} />
           )}
         </div>
       </div>

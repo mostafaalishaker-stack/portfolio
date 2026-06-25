@@ -5,6 +5,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import helmet from "helmet";
 import morgan from "morgan";
+import { apiLimiter, authLimiter } from "./middleware/rateLimiter.js";
 import authRoutes from "./routes/auth.js";
 import chatRoutes from "./routes/chat.js";
 
@@ -20,9 +21,12 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
+app.use("/api/", apiLimiter);
+app.use("/api/auth/", authLimiter);
+
 app.use("/api/auth", authRoutes);
 app.use("/api/chats", chatRoutes);
-app.get("/api/health", (_: Request, res: Response) => res.json({ status: "ok" }));
+app.get("/api/health", (_: Request, res: Response) => res.json({ status: "ok", timestamp: new Date().toISOString() }));
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error("Unhandled error:", err);

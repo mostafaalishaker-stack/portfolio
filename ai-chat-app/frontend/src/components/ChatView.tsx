@@ -1,13 +1,17 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import toast from "react-hot-toast";
 import api from "../api/client";
 import { Chat, Message } from "../types";
+import { SearchBar } from "./SearchBar";
 import { SkeletonList } from "./Skeleton";
 import { EmptyState } from "./EmptyState";
+import { Pagination } from "./Pagination";
 
 interface Props {
   onLogout: () => void;
 }
+
+const CHATS_PER_PAGE = 10;
 
 export function ChatView({ onLogout }: Props) {
   const [chats, setChats] = useState<Chat[]>([]);
@@ -16,12 +20,23 @@ export function ChatView({ onLogout }: Props) {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
+  const [chatPage, setChatPage] = useState(1);
+  const [totalChats, setTotalChats] = useState(0);
+  const [chatSearch, setChatSearch] = useState("");
   const msgEnd = useRef<HTMLDivElement>(null);
   const chatListRef = useRef<HTMLDivElement>(null);
 
+  const filteredChats = useMemo(() => {
+    if (!chatSearch) return chats;
+    return chats.filter(c => c.title.toLowerCase().includes(chatSearch.toLowerCase()));
+  }, [chats, chatSearch]);
+
+  const totalChatPages = Math.ceil(totalChats / CHATS_PER_PAGE);
+
   useEffect(() => {
-    api.get("/chats").then((res) => {
-      setChats(res.data);
+    api.get(`/chats?page=${chatPage}&limit=${CHATS_PER_PAGE}`).then((res) => {
+      setChats(res.data.chats || res.data);
+      setTotalChats(res.data.total || (Array.isArray(res.data) ? res.data.length : 0));
       setFetchError(false);
     }).catch(() => {
       setFetchError(true);
@@ -29,7 +44,7 @@ export function ChatView({ onLogout }: Props) {
     }).finally(() => {
       setInitialLoading(false);
     });
-  }, []);
+  }, [chatPage]);
 
   useEffect(() => {
     msgEnd.current?.scrollIntoView({ behavior: "smooth" });
@@ -98,39 +113,43 @@ export function ChatView({ onLogout }: Props) {
   return (
     <div className="h-screen flex bg-gray-50 dark:bg-gray-900">
       <div className="w-72 bg-white dark:bg-gray-800 border-r dark:border-gray-700 flex flex-col">
-        <div className="p-4 border-b dark:border-gray-700">
+        <div className="p-4 border-b dark:border-gray-700 space-y-3">
           <button onClick={newChat}
             className="w-full bg-indigo-600 text-white py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition flex items-center justify-center gap-2">
             <i className="fas fa-plus"></i> New Chat
           </button>
+          <SearchBar value={chatSearch} onChange={setChatSearch} placeholder="Search chats..." />
         </div>
         <div className="flex-1 overflow-y-auto p-2 space-y-1" ref={chatListRef} role="listbox" aria-label="Chat history">
           {initialLoading ? (
             <div className="p-4 space-y-3">
               <SkeletonList count={5} />
             </div>
-          ) : chats.length === 0 ? (
-            <EmptyState icon="💬" title="No chats yet" message="Start a new conversation" action={{ label: "New Chat", onClick: newChat }} />
+          ) : filteredChats.length === 0 ? (
+            <EmptyState icon="💬" title={chatSearch ? "No matching chats" : "No chats yet"} message={chatSearch ? "Try a different search term." : "Start a new conversation"} action={chatSearch ? undefined : { label: "New Chat", onClick: newChat }} />
           ) : (
-            chats.map((chat) => (
-              <div
-                key={chat._id}
-                onClick={() => selectChat(chat)}
-                onKeyDown={(e) => handleChatKeyDown(e, chat)}
-                role="option"
-                tabIndex={0}
-                aria-selected={activeChat?._id === chat._id}
-                className={`p-3 rounded-lg cursor-pointer flex items-center justify-between group text-sm transition
-                  ${activeChat?._id === chat._id ? "bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300" : "hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300"}`}
-              >
-                <span className="truncate flex-1"><i className="fas fa-message mr-2 text-xs"></i>{chat.title}</span>
-                <button onClick={(e) => { e.stopPropagation(); deleteChat(chat._id); }}
-                  aria-label={`Delete ${chat.title}`}
-                  className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
-                  <i className="fas fa-trash text-xs"></i>
-                </button>
-              </div>
-            ))
+            <>
+              {filteredChats.map((chat) => (
+                <div
+                  key={chat._id}
+                  onClick={() => selectChat(chat)}
+                  onKeyDown={(e) => handleChatKeyDown(e, chat)}
+                  role="option"
+                  tabIndex={0}
+                  aria-selected={activeChat?._id === chat._id}
+                  className={`p-3 rounded-lg cursor-pointer flex items-center justify-between group text-sm transition
+                    ${activeChat?._id === chat._id ? "bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300" : "hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300"}`}
+                >
+                  <span className="truncate flex-1"><i className="fas fa-message mr-2 text-xs"></i>{chat.title}</span>
+                  <button onClick={(e) => { e.stopPropagation(); deleteChat(chat._id); }}
+                    aria-label={`Delete ${chat.title}`}
+                    className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
+                    <i className="fas fa-trash text-xs"></i>
+                  </button>
+                </div>
+              ))}
+              <Pagination currentPage={chatPage} totalPages={totalChatPages} onPageChange={setChatPage} />
+            </>
           )}
         </div>
         <div className="p-4 border-t dark:border-gray-700">
