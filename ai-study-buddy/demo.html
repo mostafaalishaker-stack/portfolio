@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <meta name="description" content="Interactive demo of AI Study Buddy — paste any content and get AI-powered explanations, quizzes, and flashcards with GPT-4o. React + Node.js + OpenAI portfolio project.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Study Buddy Demo</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+<meta property="og:title" content="AI Study Buddy Demo — Mostafa Ali">
+<meta property="og:description" content="Interactive demo of AI Study Buddy: paste any text and get AI explanations, quizzes, and flashcards.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #0b1120; color: #e2e8f0; min-height: 100vh; }
+a { color: #60a5fa; text-decoration: none; }
+a:hover { text-decoration: underline; }
+.back-link { display: block; padding: 12px 24px; font-size: 14px; border-bottom: 1px solid #1e293b; background: #0b1120; }
+.back-link i { margin-right: 6px; }
+
+/* Login */
+#login-screen { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 50px); padding: 20px; }
+.login-box { background: #131c31; border: 1px solid #1e293b; border-radius: 16px; padding: 40px; width: 100%; max-width: 420px; }
+.login-box h1 { font-size: 24px; font-weight: 600; margin-bottom: 8px; text-align: center; }
+.login-box p { color: #94a3b8; font-size: 14px; text-align: center; margin-bottom: 32px; }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; font-size: 13px; font-weight: 500; color: #94a3b8; margin-bottom: 6px; }
+.form-group input { width: 100%; padding: 12px 16px; background: #0b1120; border: 1px solid #1e293b; border-radius: 10px; color: #e2e8f0; font-size: 14px; font-family: inherit; outline: none; transition: border-color .2s; }
+.form-group input:focus { border-color: #6366f1; }
+.btn-primary { width: 100%; padding: 12px; background: #6366f1; color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background .2s; }
+.btn-primary:hover { background: #4f46e5; }
+.btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+.btn-outline { padding: 8px 16px; background: transparent; border: 1px solid #334155; border-radius: 8px; color: #e2e8f0; cursor: pointer; font-size: 13px; font-family: inherit; transition: all .2s; }
+.btn-outline:hover { border-color: #6366f1; color: #6366f1; }
+.btn-outline.active { background: #6366f1; border-color: #6366f1; color: #fff; }
+.error-msg { color: #ef4444; font-size: 13px; text-align: center; margin-top: 12px; display: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+/* App */
+#app-screen { display: none; height: calc(100vh - 50px); }
+.app-layout { display: flex; height: 100%; }
+.sidebar { width: 280px; background: #131c31; border-right: 1px solid #1e293b; display: flex; flex-direction: column; flex-shrink: 0; }
+.sidebar-header { padding: 16px; border-bottom: 1px solid #1e293b; display: flex; flex-direction: column; gap: 8px; }
+.sidebar-header h2 { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.study-history { flex: 1; overflow-y: auto; padding: 8px; }
+.history-item { padding: 12px; border-radius: 8px; cursor: pointer; transition: background .15s; margin-bottom: 2px; }
+.history-item:hover { background: #1e293b; }
+.history-item.active { background: #1e293b; }
+.history-item .title { font-size: 14px; font-weight: 500; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.history-item .meta { font-size: 11px; color: #64748b; }
+.main-area { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.tab-bar { display: flex; gap: 4px; padding: 12px 24px; border-bottom: 1px solid #1e293b; background: #131c31; flex-wrap: wrap; }
+.tab-btn { padding: 8px 16px; background: transparent; border: none; color: #94a3b8; cursor: pointer; font-size: 13px; font-weight: 500; font-family: inherit; border-radius: 8px; transition: all .2s; display: flex; align-items: center; gap: 6px; }
+.tab-btn:hover { background: #1e293b; color: #e2e8f0; }
+.tab-btn.active { background: #6366f1; color: #fff; }
+.content-area { flex: 1; overflow-y: auto; padding: 24px; }
+
+/* Input */
+.input-section { padding: 16px 24px; border-top: 1px solid #1e293b; background: #131c31; }
+.input-wrap { display: flex; gap: 12px; background: #0b1120; border: 1px solid #1e293b; border-radius: 12px; padding: 4px; }
+.input-wrap textarea { flex: 1; padding: 10px 16px; background: transparent; border: none; color: #e2e8f0; font-size: 14px; font-family: inherit; outline: none; resize: none; min-height: 44px; max-height: 120px; }
+.input-wrap textarea::placeholder { color: #64748b; }
+.input-wrap button { width: 40px; height: 40px; background: #6366f1; color: #fff; border: none; border-radius: 10px; cursor: pointer; font-size: 16px; transition: background .2s; flex-shrink: 0; align-self: flex-end; margin-bottom: 4px; margin-right: 4px; }
+.input-wrap button:hover { background: #4f46e5; }
+
+/* Difficulty selector */
+.difficulty-bar { display: flex; gap: 8px; align-items: center; padding: 8px 0; }
+.difficulty-bar label { font-size: 12px; color: #94a3b8; }
+.diff-btn { padding: 4px 12px; background: transparent; border: 1px solid #334155; border-radius: 6px; color: #94a3b8; cursor: pointer; font-size: 12px; font-family: inherit; transition: all .2s; }
+.diff-btn:hover { border-color: #6366f1; color: #6366f1; }
+.diff-btn.active { background: #6366f1; border-color: #6366f1; color: #fff; }
+
+/* Tabs content */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+.card { background: #131c31; border: 1px solid #1e293b; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+.card h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.card p, .card li { font-size: 14px; line-height: 1.7; color: #cbd5e1; }
+.card ul { padding-left: 20px; }
+.card ul li { margin-bottom: 8px; }
+
+/* Quiz */
+.quiz-question { font-size: 15px; font-weight: 500; margin-bottom: 12px; }
+.quiz-options { display: flex; flex-direction: column; gap: 8px; }
+.quiz-option { padding: 12px 16px; background: #0b1120; border: 1px solid #1e293b; border-radius: 10px; cursor: pointer; font-size: 14px; font-family: inherit; color: #e2e8f0; text-align: left; transition: all .2s; }
+.quiz-option:hover { border-color: #6366f1; }
+.quiz-option.selected { border-color: #6366f1; background: rgba(99,102,241,.1); }
+.quiz-option.correct { border-color: #22c55e; background: rgba(34,197,94,.1); }
+.quiz-option.wrong { border-color: #ef4444; background: rgba(239,68,68,.1); }
+.quiz-result { margin-top: 12px; padding: 12px; border-radius: 8px; font-size: 13px; display: none; }
+.quiz-result.correct { display: block; background: rgba(34,197,94,.1); color: #22c55e; border: 1px solid rgba(34,197,94,.2); }
+.quiz-result.wrong { display: block; background: rgba(239,68,68,.1); color: #ef4444; border: 1px solid rgba(239,68,68,.2); }
+
+/* Flashcards */
+.flashcard { background: #131c31; border: 1px solid #1e293b; border-radius: 12px; padding: 32px; text-align: center; cursor: pointer; transition: all .3s; min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+.flashcard:hover { border-color: #6366f1; }
+.flashcard .front, .flashcard .back { width: 100%; }
+.flashcard .back { display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back { display: block; }
+.flashcard .hint { font-size: 12px; color: #64748b; position: absolute; bottom: 12px; }
+.flashcard .term { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+.flashcard .definition { font-size: 15px; line-height: 1.6; color: #cbd5e1; }
+.flashcard-nav { display: flex; justify-content: center; gap: 12px; margin-top: 16px; align-items: center; }
+.flashcard-nav button { padding: 8px 16px; background: transparent; border: 1px solid #334155; border-radius: 8px; color: #e2e8f0; cursor: pointer; font-size: 13px; font-family: inherit; transition: all .2s; }
+.flashcard-nav button:hover { border-color: #6366f1; color: #6366f1; }
+.flashcard-nav .counter { font-size: 13px; color: #64748b; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeIn .3s ease forwards; }
+
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .tab-bar { padding: 8px 12px; gap: 4px; }
+  .tab-btn { font-size: 12px; padding: 6px 12px; }
+  .content-area { padding: 16px; }
+  .input-section { padding: 12px 16px; }
+  .login-box { padding: 24px; }
+  .flashcard { padding: 20px; min-height: 160px; }
+  .flashcard .term { font-size: 17px; }
+}
+</style>
+</head>
+<body>
+
+<a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Portfolio</a>
+
+<!-- Login Screen -->
+<div id="login-screen">
+  <div class="login-box">
+    <h1><i class="fas fa-brain" style="color:#6366f1;margin-right:8px;"></i>AI Study Buddy</h1>
+    <p>Sign in to start studying</p>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="email-input" placeholder="you@example.com" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="password-input" placeholder="Enter your password" autocomplete="current-password">
+    </div>
+    <button class="btn-primary" id="signin-btn"><i class="fas fa-arrow-right-to-bracket" style="margin-right:8px;"></i>Sign In</button>
+    <div class="error-msg" id="login-error" role="alert">Please enter email and password</div>
+  </div>
+</div>
+
+<!-- App Screen -->
+<div id="app-screen">
+  <div class="app-layout">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h2><i class="fas fa-brain" style="color:#6366f1"></i> Study Buddy</h2>
+      </div>
+      <div class="study-history" id="study-history"></div>
+    </div>
+    <div class="main-area">
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="explain"><i class="fas fa-lightbulb"></i> Explain</button>
+        <button class="tab-btn" data-tab="quiz"><i class="fas fa-question-circle"></i> Quiz</button>
+        <button class="tab-btn" data-tab="flashcards"><i class="fas fa-layer-group"></i> Flashcards</button>
+      </div>
+      <div class="content-area" id="content-area"></div>
+      <div class="input-section">
+        <div class="difficulty-bar">
+          <label>Difficulty:</label>
+          <button class="diff-btn active" data-level="beginner">Beginner</button>
+          <button class="diff-btn" data-level="intermediate">Intermediate</button>
+          <button class="diff-btn" data-level="advanced">Advanced</button>
+        </div>
+        <div class="input-wrap">
+          <textarea id="study-input" placeholder="Paste your study material here..." rows="2"></textarea>
+          <button id="study-btn"><i class="fas fa-magic"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const AUTO_REPLIES = {
+  explain: {
+    beginner: [
+      { title: "Simple Explanation", content: "Here's a simple explanation of this concept. Think of it like a set of rules that helps computers understand and process information. It works step by step, making decisions based on the data it receives. This is how many modern applications handle complex tasks efficiently." },
+      { title: "Key Concepts", content: "The main ideas here are:<ul><li><strong>Input:</strong> The data or instructions you give to the system</li><li><strong>Processing:</strong> How the system handles and transforms that data</li><li><strong>Output:</strong> The result you get after processing</li></ul>Each step builds on the previous one, creating a logical flow." },
+      { title: "Real World Example", content: "Imagine you're sorting a deck of cards by suit. You look at each card, decide where it belongs, and place it in the correct pile. Computers do something similar — they take data, apply rules, and organize it into meaningful results." }
+    ],
+    intermediate: [
+      { title: "Detailed Breakdown", content: "This concept operates on several interconnected layers. At its core, it uses a series of algorithms that process data through multiple stages. Each stage applies transformations that extract meaningful patterns.<br><br>The key insight is that this approach allows for <strong>parallel processing</strong> of information, significantly improving efficiency compared to sequential methods." },
+      { title: "Technical Architecture", content: "The architecture follows a modular pattern:<ul><li><strong>Pre-processing layer:</strong> Cleans and normalizes input data</li><li><strong>Core engine:</strong> Applies the main logic with configurable parameters</li><li><strong>Post-processing:</strong> Formats and validates the output</li><li><strong>Caching layer:</strong> Stores frequently accessed results for performance</li></ul>" },
+      { title: "Implementation Notes", content: "When implementing this, consider:<ul><li>Error handling at each stage of the pipeline</li><li>Input validation to prevent unexpected data</li><li>Logging for debugging and monitoring</li><li>Scalability considerations for larger datasets</li></ul>" }
+    ],
+    advanced: [
+      { title: "Advanced Analysis", content: "The underlying computational model employs a multi-stage transformation pipeline with O(n log n) complexity in the average case. The system uses <strong>dynamic programming</strong> principles to optimize repeated sub-problem computations.<br><br>The mathematical foundation rests on information theory concepts — specifically entropy minimization and maximum likelihood estimation." },
+      { title: "Edge Cases & Optimization", content: "Critical considerations for production deployment:<ul><li><strong>Memory management:</strong> Streaming approach for large datasets to avoid OOM errors</li><li><strong>Concurrency:</strong> Thread-safe state management with mutex locks on shared resources</li><li><strong>Backpressure:</strong> Implement throttling when processing exceeds capacity</li><li><strong>Fallback strategies:</strong> Graceful degradation when sub-components fail</li></ul>" },
+      { title: "Performance Benchmarks", content: "Based on testing with representative workloads:<ul><li>P95 latency: 120ms under normal load</li><li>Throughput: ~850 requests/second with 8 concurrent workers</li><li>Memory footprint: ~45MB baseline + 2MB per concurrent session</li><li>Cache hit ratio: 78% with LRU eviction policy</li></ul>" }
+    ]
+  },
+  quizzes: {
+    beginner: [
+      { question: "What is the primary purpose of this concept?", options: ["To process data and produce meaningful output", "To display images on a screen", "To store files permanently", "To connect to the internet"], correct: 0 },
+      { question: "Which of the following best describes how this system works?", options: ["It skips steps to save time", "It processes information step by step", "It only works with numbers", "It requires human intervention at every step"], correct: 1 },
+      { question: "What is a key benefit of this approach?", options: ["It's always faster than manual work", "It handles complex tasks efficiently", "It never makes mistakes", "It works without any input"], correct: 1 }
+    ],
+    intermediate: [
+      { question: "What is the primary advantage of modular architecture in this context?", options: ["Reduced code duplication and improved maintainability", "Faster database queries", "Better color scheme options", "Smaller file sizes"], correct: 0 },
+      { question: "Which layer is responsible for data normalization?", options: ["Core engine", "Pre-processing layer", "Caching layer", "Post-processing layer"], correct: 1 },
+      { question: "Why is a caching layer important?", options: ["It stores user passwords", "It improves performance by storing frequent results", "It handles error logging", "It manages user sessions"], correct: 1 },
+      { question: "What should you consider when implementing error handling?", options: ["Only catch fatal errors", "Handle errors at each stage of the pipeline", "Ignore network timeouts", "Use the same handler for all errors"], correct: 1 }
+    ],
+    advanced: [
+      { question: "What is the average-case time complexity of the transformation pipeline?", options: ["O(1)", "O(n)", "O(n log n)", "O(n²)"], correct: 2 },
+      { question: "Which principle is used to optimize repeated sub-problem computations?", options: ["Greedy algorithms", "Dynamic programming", "Divide and conquer", "Brute force"], correct: 1 },
+      { question: "What is the recommended strategy for handling large datasets?", options: ["Load everything into memory", "Use a streaming approach", "Process synchronously", "Reduce data quality"], correct: 1 },
+      { question: "What does P95 latency of 120ms indicate?", options: ["95% of requests complete within 120ms", "The server crashes after 95 minutes", "95% of users experience errors at 120ms", "The system runs at 95% capacity"], correct: 0 }
+    ]
+  },
+  flashcards: {
+    beginner: [
+      { term: "Input", definition: "The data or instructions provided to a system for processing." },
+      { term: "Processing", definition: "The transformation of input data into meaningful output through a series of steps." },
+      { term: "Output", definition: "The final result produced after data has been processed." },
+      { term: "Algorithm", definition: "A step-by-step set of rules for solving a specific problem." },
+      { term: "Data Pipeline", definition: "A series of data processing stages where the output of one stage is the input to the next." }
+    ],
+    intermediate: [
+      { term: "Modular Architecture", definition: "A design approach that separates system functionality into independent, interchangeable modules." },
+      { term: "Caching Layer", definition: "A temporary storage layer that stores frequently accessed data for faster retrieval." },
+      { term: "Input Validation", definition: "The process of verifying that input data meets expected format and constraints before processing." },
+      { term: "Post-processing", definition: "The final stage that formats, validates, and prepares output after core processing." },
+      { term: "Throughput", definition: "The amount of data or requests a system can process within a given time period." }
+    ],
+    advanced: [
+      { term: "Entropy Minimization", definition: "A principle from information theory used to reduce uncertainty and improve prediction accuracy in data processing." },
+      { term: "Backpressure", definition: "A flow control mechanism that regulates data transmission when a component is overwhelmed." },
+      { term: "LRU Eviction Policy", definition: "Least Recently Used — a cache management strategy that removes the least recently accessed items first." },
+      { term: "Dynamic Programming", definition: "A method for solving complex problems by breaking them into overlapping sub-problems and storing their results." },
+      { term: "Graceful Degradation", definition: "A design strategy where a system continues to function with reduced capabilities when some components fail." }
+    ]
+  }
+};
+
+const SAMPLE_HISTORY = [
+  { title: "JavaScript Promises", date: "Today", content: "JavaScript Promises represent the eventual completion of an asynchronous operation..." },
+  { title: "React Hooks Overview", date: "Yesterday", content: "React Hooks let you use state and other React features without writing a class..." },
+  { title: "CSS Grid Layout", date: "2 days ago", content: "CSS Grid Layout is a two-dimensional layout system for the web..." },
+  { title: "Node.js Event Loop", date: "3 days ago", content: "The event loop is what allows Node.js to perform non-blocking I/O operations..." }
+];
+
+let studies = JSON.parse(JSON.stringify(SAMPLE_HISTORY));
+let currentStudyIndex = -1;
+let currentTab = 'explain';
+let currentLevel = 'beginner';
+let currentFlashcardIndex = 0;
+let currentQuizIndex = 0;
+let quizAnswered = false;
+let isProcessing = false;
+
+function renderHistory() {
+  const el = document.getElementById('study-history');
+  el.innerHTML = '';
+  if (studies.length === 0) {
+    el.innerHTML = '<div style="padding:16px;color:#64748b;font-size:13px;text-align:center;">No study sessions yet.<br>Paste some content to start!</div>';
+    return;
+  }
+  studies.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'history-item' + (i === currentStudyIndex ? ' active' : '');
+    div.innerHTML = `<div class="title">${s.title}</div><div class="meta">${s.date}</div>`;
+    div.addEventListener('click', () => selectStudy(i));
+    el.appendChild(div);
+  });
+}
+
+function selectStudy(index) {
+  if (isProcessing) return;
+  currentStudyIndex = index;
+  currentFlashcardIndex = 0;
+  currentQuizIndex = 0;
+  quizAnswered = false;
+  renderHistory();
+  showTab(currentTab);
+}
+
+function showTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  renderTabContent(tab);
+}
+
+function renderTabContent(tab) {
+  const area = document.getElementById('content-area');
+  area.innerHTML = '';
+
+  if (currentStudyIndex === -1) {
+    area.innerHTML = '<div style="text-align:center;padding:40px;color:#64748b;"><i class="fas fa-arrow-left" style="font-size:24px;margin-bottom:12px;display:block;"></i><p>Select a study session or paste new content to begin.</p></div>';
+    return;
+  }
+
+  if (tab === 'explain') {
+    const explains = AUTO_REPLIES.explain[currentLevel];
+    const randomIdx = Math.floor(Math.random() * explains.length);
+    const item = explains[randomIdx];
+    area.innerHTML = `<div class="card fade-in"><h3><i class="fas fa-lightbulb" style="color:#f59e0b"></i> ${item.title}</h3><div>${item.content}</div></div>`;
+  } else if (tab === 'quiz') {
+    renderQuiz(area);
+  } else if (tab === 'flashcards') {
+    renderFlashcards(area);
+  }
+}
+
+function renderQuiz(area) {
+  const quizzes = AUTO_REPLIES.quizzes[currentLevel];
+  if (!quizzes || quizzes.length === 0) {
+    area.innerHTML = '<div style="text-align:center;padding:40px;color:#64748b;">No quiz questions available for this level.</div>';
+    return;
+  }
+  const q = quizzes[currentQuizIndex % quizzes.length];
+  area.innerHTML = `<div class="card fade-in"><h3><i class="fas fa-question-circle" style="color:#6366f1"></i> Quiz Question ${(currentQuizIndex % quizzes.length) + 1} of ${quizzes.length}</h3><div class="quiz-question">${q.question}</div><div class="quiz-options" id="quiz-options">${q.options.map((opt, i) => `<button class="quiz-option" data-index="${i}">${opt}</button>`).join('')}</div><div class="quiz-result" id="quiz-result"></div><div style="margin-top:12px;display:flex;gap:8px;"><button class="btn-outline" id="prev-quiz"><i class="fas fa-arrow-left"></i> Previous</button><button class="btn-outline" id="next-quiz">Next <i class="fas fa-arrow-right"></i></button></div></div>`;
+
+  document.querySelectorAll('.quiz-option').forEach(btn => {
+    btn.addEventListener('click', () => answerQuiz(parseInt(btn.dataset.index), q.correct));
+  });
+
+  document.getElementById('prev-quiz').addEventListener('click', () => {
+    currentQuizIndex = (currentQuizIndex - 1 + quizzes.length) % quizzes.length;
+    quizAnswered = false;
+    renderTabContent('quiz');
+  });
+  document.getElementById('next-quiz').addEventListener('click', () => {
+    currentQuizIndex = (currentQuizIndex + 1) % quizzes.length;
+    quizAnswered = false;
+    renderTabContent('quiz');
+  });
+}
+
+function answerQuiz(selected, correct) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const options = document.querySelectorAll('.quiz-option');
+  options.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === correct) btn.classList.add('correct');
+    if (i === selected && selected !== correct) btn.classList.add('wrong');
+  });
+  const result = document.getElementById('quiz-result');
+  if (selected === correct) {
+    result.className = 'quiz-result correct';
+    result.textContent = '✓ Correct!';
+  } else {
+    result.className = 'quiz-result wrong';
+    result.textContent = `✗ Incorrect. The correct answer was: ${options[correct].textContent}`;
+  }
+}
+
+function renderFlashcards(area) {
+  const cards = AUTO_REPLIES.flashcards[currentLevel];
+  if (!cards || cards.length === 0) {
+    area.innerHTML = '<div style="text-align:center;padding:40px;color:#64748b;">No flashcards available for this level.</div>';
+    return;
+  }
+  const idx = currentFlashcardIndex % cards.length;
+  const card = cards[idx];
+  area.innerHTML = `<div class="card fade-in"><div class="flashcard" id="flashcard"><div class="front"><div class="term">${card.term}</div><div class="hint"><i class="fas fa-arrow-right"></i> Click to reveal</div></div><div class="back"><div class="definition">${card.definition}</div></div></div><div class="flashcard-nav"><button id="prev-card"><i class="fas fa-arrow-left"></i> Previous</button><span class="counter">${idx + 1} of ${cards.length}</span><button id="next-card">Next <i class="fas fa-arrow-right"></i></button></div></div>`;
+
+  document.getElementById('flashcard').addEventListener('click', () => {
+    document.getElementById('flashcard').classList.toggle('flipped');
+  });
+
+  document.getElementById('prev-card').addEventListener('click', () => {
+    currentFlashcardIndex = (currentFlashcardIndex - 1 + cards.length) % cards.length;
+    renderTabContent('flashcards');
+  });
+  document.getElementById('next-card').addEventListener('click', () => {
+    currentFlashcardIndex = (currentFlashcardIndex + 1) % cards.length;
+    renderTabContent('flashcards');
+  });
+}
+
+// Tab switching
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => showTab(btn.dataset.tab));
+});
+
+// Difficulty
+document.querySelectorAll('.diff-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentLevel = btn.dataset.level;
+    currentFlashcardIndex = 0;
+    currentQuizIndex = 0;
+    quizAnswered = false;
+    if (currentStudyIndex !== -1) renderTabContent(currentTab);
+  });
+});
+
+// Login
+document.getElementById('signin-btn').addEventListener('click', () => {
+  const email = document.getElementById('email-input').value.trim();
+  const password = document.getElementById('password-input').value.trim();
+  if (!email || !password) {
+    const errEl = document.getElementById('login-error');
+    errEl.textContent = 'Please enter email and password';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (password.length < 4) {
+    const errEl = document.getElementById('login-error');
+    errEl.textContent = 'Password must be at least 4 characters';
+    errEl.style.display = 'block';
+    return;
+  }
+  const btn = document.getElementById('signin-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:8px;"></i>Signing in...';
+  document.getElementById('login-error').style.display = 'none';
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-arrow-right-to-bracket" style="margin-right:8px;"></i>Sign In';
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'block';
+    currentStudyIndex = 0;
+    renderHistory();
+    showTab('explain');
+  }, 600);
+});
+
+document.getElementById('email-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('password-input').focus(); });
+document.getElementById('password-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('signin-btn').click(); });
+
+// Study button
+document.getElementById('study-btn').addEventListener('click', () => {
+  const input = document.getElementById('study-input');
+  const text = input.value.trim();
+  if (!text || isProcessing) return;
+  isProcessing = true;
+  const btn = document.getElementById('study-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  setTimeout(() => {
+    const title = text.split(/\s+/).slice(0, 5).join(' ') + (text.split(/\s+/).length > 5 ? '...' : '');
+    studies.unshift({ title, date: 'Just now', content: text });
+    currentStudyIndex = 0;
+    currentFlashcardIndex = 0;
+    currentQuizIndex = 0;
+    quizAnswered = false;
+    renderHistory();
+    showTab('explain');
+    input.value = '';
+    isProcessing = false;
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-magic"></i>';
+  }, 800);
+});
+
+document.getElementById('study-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    document.getElementById('study-btn').click();
+  }
+});
+</script>
+</body>
+</html>
