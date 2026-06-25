@@ -36,8 +36,8 @@
     #scrollTop.show{opacity:1;transform:translateY(0)}
     #scrollTop:hover{background:var(--primary-dark);transform:translateY(-3px)}
     /* Nav */
-    nav{position:fixed;top:0;left:0;width:100%;z-index:1000;background:rgba(255,255,255,.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:var(--transition)}
-    .dark nav{background:rgba(11,17,32,.85)}
+    nav{position:fixed;top:0;left:0;width:100%;z-index:1000;background:var(--bg-card);border-bottom:1px solid var(--border);transition:var(--transition)}
+    @media(min-width:769px){nav{background:rgba(255,255,255,.8);backdrop-filter:blur(20px)}.dark nav{background:rgba(11,17,32,.85)}}
     .nav-inner{display:flex;align-items:center;justify-content:space-between;height:70px}
     .logo{font-size:1.5rem;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
     .nav-links{display:flex;gap:32px;list-style:none}
