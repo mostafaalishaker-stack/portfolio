@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-  <script>if(window.innerWidth<=768){location.href='mobile.html'}</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mostafa Ali Mohamed Shaker - Portfolio</title>
@@ -28,7 +27,7 @@
     .dark{--bg:#0b1120;--bg-card:#131c31;--text:#f1f5f9;--text-sec:#94a3b8;--border:#1e293b;--shadow:0 4px 20px rgba(0,0,0,.3)}
     html{scroll-behavior:smooth;background:var(--bg)}
     body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
-    a{text-decoration:none;color:inherit}
+    a{text-decoration:none;color:inherit;touch-action:manipulation}
     .container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
     /* Progress Bar */
     #progressBar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--accent));z-index:1001;width:0%;transition:width .1s}
@@ -47,7 +46,9 @@
     .nav-links a:hover{color:var(--primary)}
     .nav-links a:hover::after{width:100%}
     .nav-actions{display:flex;align-items:center;gap:16px}
-    .theme-toggle{background:var(--bg-card);border:1px solid var(--border);color:var(--text);width:40px;height:40px;border-radius:10px;cursor:pointer;font-size:1.1rem;transition:var(--transition)}
+    .theme-toggle{background:var(--bg-card);border:1px solid var(--border);color:var(--text);width:40px;height:40px;border-radius:10px;cursor:pointer;font-size:1.1rem;transition:var(--transition);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+    .touch .service-card,.touch .project-card,.touch .skill-cat,.touch .stat-card,.touch .timeline-content,.touch .github-card,.touch .btn:hover,.touch .footer-socials a:hover,.touch .theme-toggle:hover,.touch .skill-tag:hover{transform:none!important}
+    .touch .btn-primary:active,.touch .filter-btn:active,.touch .mobile-bottom-nav a:active,.touch .theme-toggle:active{opacity:.7;transform:scale(.96)!important}
     .theme-toggle:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
     .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
     .hamburger span{display:block;width:24px;height:2px;background:var(--text);border-radius:2px;transition:var(--transition)}
@@ -67,9 +68,11 @@
     .typing-wrap .cursor{display:inline-block;width:3px;height:1.25rem;background:var(--primary);margin-left:4px;animation:blink .8s step-end infinite;vertical-align:text-bottom}
     @keyframes blink{50%{opacity:0}}
     .hero-btns{display:flex;gap:16px;flex-wrap:wrap}
-    .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:12px;font-weight:600;font-size:.95rem;transition:var(--transition);cursor:pointer;border:none}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:12px;font-weight:600;font-size:.95rem;transition:var(--transition);cursor:pointer;border:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
     .btn-primary{background:var(--primary);color:#fff}
     .btn-primary:hover{background:var(--primary-dark);transform:translateY(-2px);box-shadow:0 8px 30px rgba(99,102,241,.35)}
+    .btn-primary:active{transform:translateY(0);box-shadow:none}
+    .btn-outline:active{transform:translateY(0)}
     .btn-outline{background:transparent;border:2px solid var(--border);color:var(--text)}
     .btn-outline:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-2px)}
     .btn-outline i{color:var(--primary)}
@@ -188,7 +191,7 @@
     .reveal-scale.visible{opacity:1;transform:scale(1)}
     /* Mobile Bottom Nav */
     .mobile-bottom-nav{display:none;position:fixed;bottom:0;left:0;width:100%;background:var(--bg-card);border-top:1px solid var(--border);z-index:999;padding:8px 0;justify-content:space-around}
-    .mobile-bottom-nav a{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--text-sec);font-size:.65rem;transition:var(--transition);padding:6px 12px;border-radius:8px}
+    .mobile-bottom-nav a{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--text-sec);font-size:.65rem;transition:var(--transition);padding:8px 14px;border-radius:8px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
     .mobile-bottom-nav a i{font-size:1.2rem}
     .mobile-bottom-nav a:hover,.mobile-bottom-nav a.active{color:var(--primary);background:rgba(99,102,241,.08)}
     @media(max-width:768px){
@@ -199,10 +202,12 @@
       .service-card,.project-card,.skill-cat,.stat-card,.timeline-content,.github-card,.btn,.footer-socials a,.theme-toggle,.hamburger,.mobile-bottom-nav a{box-shadow:none!important;transform:none!important}
       .nav-links{position:fixed;top:70px;left:0;width:100%;background:var(--bg);flex-direction:column;padding:24px;gap:20px;display:none;border-bottom:1px solid var(--border);z-index:999}
       .nav-links.open{display:flex}
-      .hamburger{display:flex}
+      .nav-links a{padding:10px 0;touch-action:manipulation}
+      .hamburger{display:flex;padding:8px;touch-action:manipulation}
       .hero-grid{grid-template-columns:1fr;text-align:center}
       .hero-img{width:250px;margin:0 auto}
-      .hero-btns{justify-content:center}
+      .hero-btns{justify-content:center;flex-direction:column;align-items:stretch}
+      .hero-btns .btn{justify-content:center;text-align:center}
       .about-grid{grid-template-columns:1fr}
       .about-stats{grid-template-columns:repeat(3,1fr)}
       .projects-grid{grid-template-columns:1fr}
@@ -211,8 +216,10 @@
       .services-grid{grid-template-columns:1fr}
       .github-grid{grid-template-columns:1fr}
       .mobile-bottom-nav{display:flex;background:var(--bg)}
-      body{padding-bottom:65px}
-      #scrollTop{bottom:80px;right:16px;width:40px;height:40px;font-size:1rem}
+      body{padding-bottom:65px;-webkit-overflow-scrolling:touch}
+      #scrollTop{bottom:80px;right:16px;width:44px;height:44px;font-size:1rem}
+      .btn{padding:16px 24px;min-height:48px}
+      input,textarea,select{font-size:16px!important}
     }
     @media(max-width:480px){
       .about-stats{grid-template-columns:1fr}
@@ -728,6 +735,10 @@
   </nav>
 
   <script>
+    // Touch device detection — disable heavy animations
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    if (isTouchDevice) document.documentElement.classList.add('touch');
+
     // Theme Toggle
     const toggle = document.getElementById('themeToggle');
     const icon = toggle.querySelector('i');
@@ -742,7 +753,9 @@
     // Mobile Nav Toggle
     const hamburger = document.getElementById('hamburger');
     const navLinks = document.getElementById('navLinks');
-    hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+    function toggleNav(){navLinks.classList.toggle('open')}
+    hamburger.addEventListener('click', toggleNav);
+    hamburger.addEventListener('touchstart', function(e){e.preventDefault();toggleNav()},{passive:false});
     navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
 
     // Typing Effect
@@ -795,6 +808,8 @@
       }
     }
 
+    // Stop particles on touch devices for performance
+    if (isTouchDevice) { const c = document.getElementById('particles-canvas'); if (c) c.style.display = 'none'; }
     function initParticles(count = 80) {
       particles = [];
       for (let i = 0; i < count; i++) particles.push(new Particle());
@@ -884,10 +899,12 @@
       const progress = (scrollTop / scrollHeight) * 100;
       document.getElementById('progressBar').style.width = progress + '%';
       document.getElementById('scrollTop').classList.toggle('show', scrollTop > 400);
-    });
+    }, { passive: true });
 
     // Scroll to Top
-    document.getElementById('scrollTop').addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
+    document.getElementById('scrollTop').addEventListener('click', scrollToTop);
+    document.getElementById('scrollTop').addEventListener('touchstart', function(e){e.preventDefault();scrollToTop()},{passive:false});
 
     // Schedule Button
     const scheduleBtn = document.getElementById('scheduleBtn');
